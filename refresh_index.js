@@ -52,6 +52,8 @@ function main() {
     const m = icons[slug] || {};
     const iconUrl = typeof m === 'string' ? m : (m.iconUrl || null);
     const genre = (typeof m === 'object' && m.genre) ? m.genre : '竞品分析卡片';
+    const totalDownloads = (typeof m === 'object' && m.totalDownloads) ? m.totalDownloads : null;
+    const totalRevenue = (typeof m === 'object' && m.totalRevenue) ? m.totalRevenue : null;
     return {
       title,
       fileName,
@@ -62,6 +64,8 @@ function main() {
       tags: inferTags(title, fileName),
       slug,
       iconUrl,
+      totalDownloads,
+      totalRevenue,
     };
   });
 

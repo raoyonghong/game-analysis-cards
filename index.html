@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>游戏数据卡片库</title>
+  <title>游戏检索数据库</title>
   <link rel="stylesheet" href="./site.css">
 </head>
 <body>
@@ -11,31 +11,34 @@
     <header class="hero">
       <div>
         <p class="eyebrow">Claude Code Workspace</p>
-        <h1>游戏数据卡片库</h1>
-        <p class="hero-desc">集中管理你后续生成的竞品分析 HTML 卡片。支持搜索、排序、筛选，并直接打开原始卡片。</p>
+        <h1 data-i18n="siteTitle">游戏检索数据库</h1>
+        <p class="hero-desc" data-i18n="siteDesc">集中管理你后续生成的竞品分析 HTML 卡片。支持搜索、排序、筛选，并直接打开原始卡片。</p>
       </div>
       <div class="hero-meta">
         <div class="stat">
-          <span class="stat-label">当前卡片数</span>
+          <span class="stat-label" data-i18n="statCards">当前卡片数</span>
           <strong id="cardCount">--</strong>
         </div>
         <div class="stat">
-          <span class="stat-label">最近刷新</span>
+          <span class="stat-label" data-i18n="statRefresh">最近刷新</span>
           <strong id="generatedAt">--</strong>
+        </div>
+        <div class="stat lang-stat">
+          <button id="langToggle" class="lang-btn">EN</button>
         </div>
       </div>
     </header>
 
     <section class="toolbar">
       <div class="search-box">
-        <input id="searchInput" type="search" placeholder="搜索游戏名、文件名、标签...">
+        <input id="searchInput" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="搜索游戏名、文件名、标签...">
       </div>
       <div class="toolbar-actions">
         <select id="sortSelect">
-          <option value="updated-desc">按更新时间（新→旧）</option>
-          <option value="updated-asc">按更新时间（旧→新）</option>
-          <option value="title-asc">按标题（A→Z）</option>
-          <option value="title-desc">按标题（Z→A）</option>
+          <option value="updated-desc" data-i18n="sortNewFirst">按更新时间（新→旧）</option>
+          <option value="updated-asc" data-i18n="sortOldFirst">按更新时间（旧→新）</option>
+          <option value="title-asc" data-i18n="sortTitleAz">按标题（A→Z）</option>
+          <option value="title-desc" data-i18n="sortTitleZa">按标题（Z→A）</option>
         </select>
         <select id="filterSelect">
           <option value="all">全部卡片</option>
