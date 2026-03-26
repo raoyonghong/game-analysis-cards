@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>竞品分析 - Drill &amp; Collect: idle mine dig</title>
+<title>竞品分析 - War Machines: Tanks Battle Game</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f2f5; padding: 24px; color: #1a1a2e; }
 .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 920px; margin: 0 auto; overflow: hidden; }
-.card-header { background: linear-gradient(135deg, #0d1f0d 0%, #2d5a1b 100%); padding: 28px 32px; display: flex; align-items: center; gap: 18px; }
-.app-badge { width: 72px; height: 72px; border-radius: 16px; background: #3a7d12; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; flex-shrink: 0; }
+.card-header { background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 100%); padding: 28px 32px; display: flex; align-items: center; gap: 18px; }
+.app-badge { width: 72px; height: 72px; border-radius: 16px; background: #e94560; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; flex-shrink: 0; }
 .app-info h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px; }
 .subtitle { font-size: 13px; color: rgba(255,255,255,0.78); }
 .tags { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
@@ -22,7 +22,7 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f
 .item, .kpi-item { padding: 18px 20px; text-align: center; border-right: 1px solid #f0f2f5; }
 .item:last-child, .kpi-item:last-child { border-right: none; }
 .item-label, .kpi-label { font-size: 11px; color: #64748b; margin-bottom: 6px; }
-.item-value { font-size: 24px; font-weight: 700; color: #3a7d12; }
+.item-value { font-size: 24px; font-weight: 700; color: #e94560; }
 .kpi-value { font-size: 26px; font-weight: 700; color: #1f2937; }
 .item-sub, .kpi-sub { font-size: 10px; color: #94a3b8; margin-top: 4px; }
 .charts-row { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #f0f2f5; }
@@ -37,7 +37,7 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f
 .country-table th.r { text-align: right; }
 .country-table td { padding: 10px; font-size: 13px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
 .country-table tr:last-child td { border-bottom: none; }
-.rank-badge { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; background: #3a7d12; color: #fff; }
+.rank-badge { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; background: #e94560; color: #fff; }
 .num { text-align: right; color: #475569; }
 .bar-wrap { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
 .bar-bg { width: 74px; height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
@@ -46,7 +46,7 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f
 .bar-rv { background: linear-gradient(90deg, #16a34a, #86efac); }
 .pct { min-width: 44px; text-align: right; font-size: 12px; font-weight: 700; color: #334155; }
 .insights { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 32px 28px; }
-.insight-card { background: #f0fff0; border-left: 4px solid #3a7d12; border-radius: 10px; padding: 16px 18px; }
+.insight-card { background: #fff5f7; border-left: 4px solid #e94560; border-radius: 10px; padding: 16px 18px; }
 .insight-card h4 { font-size: 12px; color: #334155; margin-bottom: 8px; }
 .insight-card p { font-size: 12px; line-height: 1.7; color: #334155; }
 .card-footer { background: #f8fafc; padding: 12px 32px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; gap: 12px; flex-wrap: wrap; }
@@ -71,11 +71,11 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f
 
 <div class="card">
   <div class="card-header">
-    <div class="app-badge">DC</div>
+    <div class="app-badge">WM</div>
     <div class="app-info">
-      <h1>Drill &amp; Collect: idle mine dig</h1>
-      <div class="subtitle">Apps Mobile Games · iOS + Android · 土耳其发行</div>
-      <div class="tags"><span class="tag">放置经营</span><span class="tag">超休闲</span><span class="tag">放置</span><span class="tag">资源管理</span><span class="tag">免费游戏</span><span class="tag">线上活动</span></div>
+      <h1>War Machines: Tanks Battle Game</h1>
+      <div class="subtitle">Wildlife Studios · iOS + Android · 巴西发行</div>
+      <div class="tags"><span class="tag">车辆射击</span><span class="tag">3D 写实</span><span class="tag">角色收集</span><span class="tag">外部商店</span><span class="tag">多人PvP</span><span class="tag">公会</span></div>
     </div>
   </div>
 
@@ -83,17 +83,17 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f
   <div class="overview-row">
     <div class="item">
       <div class="item-label">全球上线时间</div>
-      <div class="item-value">2023/04/07</div>
+      <div class="item-value">2016/11/16</div>
       <div class="item-sub">数据来源：Sensor Tower</div>
     </div>
     <div class="item">
       <div class="item-label">上线至今总下载</div>
-      <div class="item-value">20.6M</div>
+      <div class="item-value">224.9M</div>
       <div class="item-sub">全球 · 所有时间</div>
     </div>
     <div class="item">
       <div class="item-label">上线至今总收入</div>
-      <div class="item-value">$6.26M</div>
+      <div class="item-value">$242.9M</div>
       <div class="item-sub">全球 · 所有时间</div>
     </div>
   </div>
@@ -102,22 +102,22 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f
   <div class="kpi-row">
     <div class="kpi-item">
       <div class="kpi-label">下载量</div>
-      <div class="kpi-value">376K</div>
+      <div class="kpi-value">2.1M</div>
       <div class="kpi-sub">全球 · 近30天</div>
     </div>
     <div class="kpi-item">
       <div class="kpi-label">收入</div>
-      <div class="kpi-value">$247.7K</div>
+      <div class="kpi-value">$1.9M</div>
       <div class="kpi-sub">全球 · 近30天</div>
     </div>
     <div class="kpi-item">
       <div class="kpi-label">RPD</div>
-      <div class="kpi-value">$0.30</div>
+      <div class="kpi-value">$1.08</div>
       <div class="kpi-sub">全球 · 所有时间</div>
     </div>
     <div class="kpi-item">
       <div class="kpi-label">平均DAU</div>
-      <div class="kpi-value">152K</div>
+      <div class="kpi-value">386K</div>
       <div class="kpi-sub">全球 · 近30天</div>
     </div>
   </div>
@@ -150,62 +150,62 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f
       <tbody>
       <tr>
         <td><span class="rank-badge">1</span></td>
-        <td>美国</td>
-        <td class="num">5,722,753</td>
+        <td>印度</td>
+        <td class="num">54,188,024</td>
         <td>
-          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:100%"></div></div><span class="pct">27.8%</span></div>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:100%"></div></div><span class="pct">24.1%</span></div>
         </td>
-        <td class="num">$3,992,750</td>
+        <td class="num">$1,334,846</td>
         <td>
-          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:100%"></div></div><span class="pct">63.8%</span></div>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:8%"></div></div><span class="pct">0.5%</span></div>
         </td>
       </tr>
       <tr>
         <td><span class="rank-badge">2</span></td>
-        <td>印度</td>
-        <td class="num">1,964,493</td>
+        <td>俄罗斯</td>
+        <td class="num">15,592,931</td>
         <td>
-          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:34.32776148123115%"></div></div><span class="pct">9.6%</span></div>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:28.775603627842194%"></div></div><span class="pct">6.9%</span></div>
         </td>
-        <td class="num">$2,399</td>
+        <td class="num">$8,496,354</td>
         <td>
-          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:8%"></div></div><span class="pct">0.0%</span></div>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:8%"></div></div><span class="pct">3.5%</span></div>
         </td>
       </tr>
       <tr>
         <td><span class="rank-badge">3</span></td>
-        <td>英国</td>
-        <td class="num">1,046,292</td>
+        <td>美国</td>
+        <td class="num">14,750,387</td>
         <td>
-          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:18.28301867999545%"></div></div><span class="pct">5.1%</span></div>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:27.22075084339669%"></div></div><span class="pct">6.6%</span></div>
         </td>
-        <td class="num">$568,093</td>
+        <td class="num">$111,490,323</td>
         <td>
-          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:14.228113455638344%"></div></div><span class="pct">9.1%</span></div>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:100%"></div></div><span class="pct">45.9%</span></div>
         </td>
       </tr>
       <tr>
         <td><span class="rank-badge">4</span></td>
-        <td>土耳其</td>
-        <td class="num">1,020,717</td>
+        <td>巴西</td>
+        <td class="num">10,114,963</td>
         <td>
-          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:17.83611838567906%"></div></div><span class="pct">5.0%</span></div>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:18.666417878607273%"></div></div><span class="pct">4.5%</span></div>
         </td>
-        <td class="num">$42,560</td>
+        <td class="num">$2,338,392</td>
         <td>
-          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:8%"></div></div><span class="pct">0.7%</span></div>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:8%"></div></div><span class="pct">1.0%</span></div>
         </td>
       </tr>
       <tr>
         <td><span class="rank-badge">5</span></td>
-        <td>巴西</td>
-        <td class="num">993,866</td>
+        <td>巴基斯坦</td>
+        <td class="num">9,396,607</td>
         <td>
-          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:17.36692113044194%"></div></div><span class="pct">4.8%</span></div>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:17.340744884884526%"></div></div><span class="pct">4.2%</span></div>
         </td>
-        <td class="num">$23,726</td>
+        <td class="num">$521,352</td>
         <td>
-          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:8%"></div></div><span class="pct">0.4%</span></div>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:8%"></div></div><span class="pct">0.2%</span></div>
         </td>
       </tr>
       </tbody>
@@ -216,11 +216,11 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f
   <div class="insights">
       <div class="insight-card">
         <h4>市场集中度</h4>
-        <p>美国贡献27.8%下载、63.8%收入。 收入集中度显著高于下载集中度，核心市场付费深度更强。</p>
+        <p>印度贡献24.1%下载、0.5%收入。 下载集中但收入承接偏弱，核心市场流量价值有待验证。</p>
       </div>
       <div class="insight-card">
         <h4>变现效率</h4>
-        <p>上线至今RPD约为$0.30。 近30天下载/收入折算RPD约为$0.66。 近30天平均DAU为152K。</p>
+        <p>上线至今RPD约为$1.08。 近30天下载/收入折算RPD约为$0.90。 近30天平均DAU为386K。</p>
       </div>
       <div class="insight-card">
         <h4>区域结构</h4>
@@ -228,20 +228,20 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f
       </div>
       <div class="insight-card">
         <h4>趋势判断</h4>
-        <p>下载峰值出现在2023/6（1.19M），收入峰值出现在2023/8（$358K）。 当前下载已明显低于历史高点，增长热度趋缓。</p>
+        <p>下载峰值出现在2021/1（4.76M），收入峰值出现在2021/10（$3.82M）。 当前下载已明显低于历史高点，增长热度趋缓。</p>
       </div>
   </div>
 
   <div class="card-footer">
-    <span class="footer-text">数据周期：2023/4 - 2026/3 · 全球</span>
+    <span class="footer-text">数据周期：2018/1 - 2026/3 · 全球</span>
     <span class="footer-text">数据来源：Sensor Tower · 生成时间：2026/03/26</span>
   </div>
 </div>
 
 <script>
-const labels = ["2023/4","2023/5","2023/6","2023/7","2023/8","2023/9","2023/10","2023/11","2023/12","2024/1","2024/2","2024/3","2024/4","2024/5","2024/6","2024/7","2024/8","2024/9","2024/10","2024/11","2024/12","2025/1","2025/2","2025/3","2025/4","2025/5","2025/6","2025/7","2025/8","2025/9","2025/10","2025/11","2025/12","2026/1","2026/2","2026/3"];
-const dlData = [586843,915352,1190744,1008550,955798,753307,677272,457253,429436,506485,602280,639663,545861,781578,617056,500969,612843,650231,617256,714958,524181,548035,455449,479819,355534,398996,355422,410167,490574,416774,323859,440265,477715,457816,370876,296462];
-const rvData = [8750,32822,33097,214373,357721,191166,133679,166366,191136,139409,104593,113503,126834,218170,207598,187630,164066,162561,171041,204093,188374,200989,179403,203581,174483,168995,160990,166078,176579,168248,176304,205257,249461,269995,249175,195999];
+const labels = ["2018/1","2018/2","2018/3","2018/4","2018/5","2018/6","2018/7","2018/8","2018/9","2018/10","2018/11","2018/12","2019/1","2019/2","2019/3","2019/4","2019/5","2019/6","2019/7","2019/8","2019/9","2019/10","2019/11","2019/12","2020/1","2020/2","2020/3","2020/4","2020/5","2020/6","2020/7","2020/8","2020/9","2020/10","2020/11","2020/12","2021/1","2021/2","2021/3","2021/4","2021/5","2021/6","2021/7","2021/8","2021/9","2021/10","2021/11","2021/12","2022/1","2022/2","2022/3","2022/4","2022/5","2022/6","2022/7","2022/8","2022/9","2022/10","2022/11","2022/12","2023/1","2023/2","2023/3","2023/4","2023/5","2023/6","2023/7","2023/8","2023/9","2023/10","2023/11","2023/12","2024/1","2024/2","2024/3","2024/4","2024/5","2024/6","2024/7","2024/8","2024/9","2024/10","2024/11","2024/12","2025/1","2025/2","2025/3","2025/4","2025/5","2025/6","2025/7","2025/8","2025/9","2025/10","2025/11","2025/12","2026/1","2026/2","2026/3"];
+const dlData = [1185749,729847,1248128,1078994,734636,1022317,1874099,3560351,1569013,1651436,1829238,2779766,2531386,2708009,2980563,3388928,2191376,1334466,1354848,3750252,2567453,1951327,1726816,2652695,3655227,3632234,3494805,4292502,4518660,3494754,2268759,2025980,2536210,2445769,2210841,3182794,4755233,3608062,2805673,2456571,2892089,2960600,1609715,1635961,1032361,1572151,1953422,2231500,2972688,1928110,1810603,1650257,1459125,1324354,1887372,1445703,1907397,1998360,1885410,1918528,2169401,2080106,1734326,1737691,1955990,2398309,1759806,1776342,2488248,1882970,1744960,1857303,2300482,2524637,2196288,1706491,1089575,1181578,1190410,1671120,2290441,1877775,1066636,963615,712853,1470061,1379135,720136,2344031,2225058,2142840,2145815,1615032,2053375,1358064,2513966,1457276,1665390,1659987];
+const rvData = [1164692,1400966,1227845,1311517,1279477,1229346,1435514,1538551,1469338,1487082,1661148,1800064,1649060,1538868,1563833,1783239,1525386,1429508,1829475,2018970,1812112,1950464,1823269,2054774,2325496,1863647,2126674,2855167,3184907,3210350,3066227,2923814,3278705,3230737,3124839,3287353,3429240,2945376,2914785,2825120,3062692,3080606,3002834,2874989,3326165,3819084,3608514,3137567,3028150,2791713,2788764,2882493,3180876,3071599,3054826,2948712,3315456,3162247,3387013,3253218,3174974,2840874,3048733,2725088,2579092,2157178,2284055,2299249,2315386,2305086,2408262,2538664,2355483,2120615,2199292,2150499,2197718,2100486,2117491,2130671,1969440,2018377,2142359,2526213,2245098,2074189,2202506,1952116,1940638,1766204,1810638,2056115,1882018,1983685,1796955,1652101,1678304,1877261,1547093];
 const commonOpts = {
   responsive: true,
   maintainAspectRatio: false,
