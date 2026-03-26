@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>竞品分析 - Idle Zombie Miner: Gold Tycoon</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f2f5; padding: 24px; color: #1a1a2e; }
+.card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 900px; margin: 0 auto; overflow: hidden; }
+
+/* ── Header ── */
+.card-header { background: linear-gradient(135deg, #0d1f0d 0%, #1a3d1a 60%, #2d5a1b 100%); padding: 28px 32px; display: flex; align-items: center; gap: 20px; }
+.app-icon { width: 72px; height: 72px; border-radius: 16px; background: #3a7d12; display: flex; align-items: center; justify-content: center; font-size: 32px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(58,125,18,0.5); }
+.app-info h1 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+.app-info .subtitle { font-size: 13px; color: #a0c89a; }
+.app-info .tags { margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+.tag { background: rgba(255,255,255,0.12); color: #e2e8f0; font-size: 11px; padding: 3px 10px; border-radius: 20px; }
+.tag.highlight { background: #3a7d12; color: #fff; }
+
+/* ── 维度一：基础概览 ── */
+.dim-label { font-size: 11px; font-weight: 700; color: #a0aec0; text-transform: uppercase; letter-spacing: 1px; padding: 16px 32px 8px; border-top: 1px solid #f0f2f5; }
+.dim-label:first-of-type { border-top: none; }
+.overview-row { display: grid; grid-template-columns: repeat(3, 1fr); }
+.ov-item { padding: 16px 24px 20px; text-align: center; border-right: 1px solid #f0f2f5; }
+.ov-item:last-child { border-right: none; }
+.ov-label { font-size: 11px; color: #718096; margin-bottom: 6px; }
+.ov-value { font-size: 22px; font-weight: 700; color: #1a1a2e; }
+.ov-value.accent { color: #3a7d12; }
+.ov-sub { font-size: 10px; color: #a0aec0; margin-top: 3px; }
+
+/* ── 维度二：近30天核心指标 ── */
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #f0f2f5; }
+.kpi-item { padding: 18px 24px; text-align: center; border-right: 1px solid #f0f2f5; }
+.kpi-item:last-child { border-right: none; }
+.kpi-label { font-size: 11px; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.kpi-value { font-size: 26px; font-weight: 700; line-height: 1; }
+.kpi-value.blue { color: #3182ce; }
+.kpi-value.green { color: #38a169; }
+.kpi-value.orange { color: #dd6b20; }
+.kpi-value.purple { color: #805ad5; }
+.kpi-sub { font-size: 10px; color: #a0aec0; margin-top: 4px; }
+
+/* ── 维度三：趋势图 ── */
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-top: 1px solid #f0f2f5; }
+.chart-box { padding: 20px 24px; border-right: 1px solid #f0f2f5; }
+.chart-box:last-child { border-right: none; }
+.chart-title { font-size: 12px; font-weight: 600; color: #4a5568; margin-bottom: 14px; }
+.chart-wrap { position: relative; height: 160px; }
+
+/* ── 维度四：Top5国家表 ── */
+.section { padding: 0 32px 24px; }
+.section-title { font-size: 11px; font-weight: 700; color: #a0aec0; text-transform: uppercase; letter-spacing: 1px; padding: 16px 0 12px; border-top: 1px solid #f0f2f5; }
+.country-table { width: 100%; border-collapse: collapse; }
+.country-table th { font-size: 11px; color: #718096; font-weight: 600; text-align: left; padding: 8px 10px; background: #f7fafc; border-bottom: 2px solid #e2e8f0; }
+.country-table th.r { text-align: right; }
+.country-table td { padding: 11px 10px; font-size: 13px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
+.country-table tr:last-child td { border-bottom: none; }
+.country-table tr:hover td { background: #f7fafc; }
+.rank-badge { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: #fff; }
+.r1 { background: #f6c90e; } .r2 { background: #a0aec0; } .r3 { background: #cd7f32; }
+.r4, .r5 { background: #cbd5e0; color: #4a5568; }
+.bar-wrap { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.bar-bg { width: 72px; height: 5px; background: #e2e8f0; border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+.bar-dl { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #3182ce, #63b3ed); }
+.bar-rv { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #38a169, #68d391); }
+.pct { font-size: 12px; font-weight: 700; color: #2d3748; min-width: 38px; text-align: right; }
+.abs-val { font-size: 11px; color: #718096; text-align: right; }
+
+/* ── 分析洞察 ── */
+.analysis-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 32px 28px; }
+.a-label { font-size: 11px; font-weight: 700; color: #a0aec0; text-transform: uppercase; letter-spacing: 1px; padding: 16px 32px 12px; border-top: 1px solid #f0f2f5; }
+.ac { background: #f7fafc; border-radius: 10px; padding: 16px 18px; border-left: 4px solid #3182ce; }
+.ac.warn { border-left-color: #dd6b20; background: #fffaf5; }
+.ac.success { border-left-color: #38a169; background: #f0fff4; }
+.ac.info { border-left-color: #805ad5; background: #faf5ff; }
+.ac.ref { border-left-color: #3a7d12; background: #f0fff0; }
+.ac h4 { font-size: 12px; font-weight: 700; color: #4a5568; margin-bottom: 8px; }
+.ac p { font-size: 12px; color: #2d3748; line-height: 1.75; }
+.ac strong { color: #1a1a2e; }
+.chips { display: flex; gap: 8px; margin: 8px 0; flex-wrap: wrap; }
+.chip { background: rgba(0,0,0,0.06); border-radius: 5px; padding: 3px 9px; font-size: 11px; font-weight: 600; color: #2d3748; }
+.ac .note { margin-top: 8px; padding-top: 8px; border-top: 1px dashed #e2e8f0; font-size: 11px; color: #718096; line-height: 1.7; }
+.ac .note strong { color: #3a7d12; }
+
+/* ── Footer ── */
+.card-footer { background: #f7fafc; padding: 12px 32px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; }
+.footer-text { font-size: 11px; color: #a0aec0; }
+</style>
+</head>
+<body>
+<div class="card">
+
+  <!-- Header -->
+  <div class="card-header">
+    <div class="app-icon">⛏️</div>
+    <div class="app-info">
+      <h1>Idle Zombie Miner: Gold Tycoon</h1>
+      <div class="subtitle">Royal Ark &nbsp;·&nbsp; iOS + Android &nbsp;·&nbsp; 塞浦路斯发行</div>
+      <div class="tags">
+        <span class="tag highlight">放置经营</span>
+        <span class="tag">混合休闲</span>
+        <span class="tag">模拟</span>
+        <span class="tag">订阅制</span>
+        <span class="tag">去广告</span>
+        <span class="tag">3D 卡通</span>
+        <span class="tag">俯视角</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 维度一：基础概览 -->
+  <div class="dim-label">维度一 · 基础概览</div>
+  <div class="overview-row">
+    <div class="ov-item">
+      <div class="ov-label">全球上线时间</div>
+      <div class="ov-value accent">2023/10/06</div>
+      <div class="ov-sub">首发：2023/09/21</div>
+    </div>
+    <div class="ov-item">
+      <div class="ov-label">上线至今总下载</div>
+      <div class="ov-value">23.9M</div>
+      <div class="ov-sub">双平台 · 全球</div>
+    </div>
+    <div class="ov-item">
+      <div class="ov-label">上线至今总收入</div>
+      <div class="ov-value">$40.1M</div>
+      <div class="ov-sub">双平台 · 全球</div>
+    </div>
+  </div>
+
+  <!-- 维度二：近30天核心指标 -->
+  <div class="dim-label">维���二 · 近30天核心指标</div>
+  <div class="kpi-row">
+    <div class="kpi-item">
+      <div class="kpi-label">下载量</div>
+      <div class="kpi-value blue">586K</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">收入</div>
+      <div class="kpi-value green">$1.7M</div>
+      <div class="kpi-sub">全球 · 近30天（仅商店）</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">RPD</div>
+      <div class="kpi-value orange">$1.68</div>
+      <div class="kpi-sub">全球 · 所有时间</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">平均 DAU</div>
+      <div class="kpi-value purple">337K</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+  </div>
+
+  <!-- 维度三：趋势图 -->
+  <div class="dim-label">维度三 · 上线至今月度趋势</div>
+  <div class="charts-row">
+    <div class="chart-box">
+      <div class="chart-title">📥 月度下载量趋势</div>
+      <div class="chart-wrap"><canvas id="dlChart"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">💰 月度收入趋势</div>
+      <div class="chart-wrap"><canvas id="rvChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- 维度四：Top5国家 -->
+  <div class="section">
+    <div class="section-title">维度四 · 上线至今 Top 5 国家表现（按下载量排序）</div>
+    <table class="country-table">
+      <thead>
+        <tr>
+          <th style="width:30px">#</th>
+          <th>国家</th>
+          <th class="r">下载量</th>
+          <th class="r" style="width:150px">下载占比</th>
+          <th class="r">净收入</th>
+          <th class="r" style="width:150px">净收入占比</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="rank-badge r1">1</span></td>
+          <td>🇺🇸 美国</td>
+          <td class="abs-val" style="text-align:right">4,036,300</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-dl" style="width:100%"></div></div><span class="pct">16.9%</span></div></td>
+          <td class="abs-val" style="text-align:right">$19,716,120</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-rv" style="width:100%"></div></div><span class="pct">49.2%</span></div></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge r2">2</span></td>
+          <td>🇷🇺 俄罗斯</td>
+          <td class="abs-val" style="text-align:right">2,854,464</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-dl" style="width:70.7%"></div></div><span class="pct">11.9%</span></div></td>
+          <td class="abs-val" style="text-align:right">$362,637</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-rv" style="width:1.8%"></div></div><span class="pct">0.9%</span></div></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge r3">3</span></td>
+          <td>🇮🇳 印度</td>
+          <td class="abs-val" style="text-align:right">1,502,896</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-dl" style="width:37.2%"></div></div><span class="pct">6.3%</span></div></td>
+          <td class="abs-val" style="text-align:right">$30,716</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-rv" style="width:0.2%"></div></div><span class="pct">0.1%</span></div></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge r4">4</span></td>
+          <td>🇧🇷 巴西</td>
+          <td class="abs-val" style="text-align:right">1,262,431</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-dl" style="width:31.3%"></div></div><span class="pct">5.3%</span></div></td>
+          <td class="abs-val" style="text-align:right">$287,330</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-rv" style="width:1.4%"></div></div><span class="pct">0.7%</span></div></td>
+        </tr>
+        <tr>
+          <td><span class="rank-badge r5">5</span></td>
+          <td>🇩🇪 德国</td>
+          <td class="abs-val" style="text-align:right">1,252,554</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-dl" style="width:31.0%"></div></div><span class="pct">5.2%</span></div></td>
+          <td class="abs-val" style="text-align:right">$3,228,095</td>
+          <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-rv" style="width:16.5%"></div></div><span class="pct">8.1%</span></div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 数据分析洞察 -->
+  <div class="a-label">数据分析洞察</div>
+  <div class="analysis-grid">
+    <div class="ac warn">
+      <h4>⚠️ 美国一国独撑收入，但下载分散全球</h4>
+      <p>美国下载仅占 <strong>16.9%</strong>，但贡献了 <strong>49.2% 收入</strong>（$1,972万）。第2名俄罗斯下载11.9%，收入仅0.9%——<strong>100倍的单用户价值差距</strong>。印度6.3%下载→0.1%收入同样悬殊。</p>
+      <div class="chips"><span class="chip">🇺🇸 下载16.9% / 收入49.2%</span><span class="chip">🇷🇺 下载11.9% / 收入0.9%</span><span class="chip">🇮🇳 下载6.3% / 收入0.1%</span></div>
+      <div class="note">游戏在英语发达国家变现极强，但在俄罗斯/印度/巴西等新兴市场是纯粹的流量洼地。<strong>收入高度依赖美国用户续费与付费行为。</strong></div>
+    </div>
+    <div class="ac success">
+      <h4>💰 规模效应显著，收入持续攀升</h4>
+      <p>上线至今总下载 <strong>23.9M</strong>、总收入 <strong>$4,007万</strong>，RPD $1.68。虽然RPD偏低，但月收入从2023年不足$10万增长至2025年稳定在 <strong>$200-270万/月</strong>，靠留存拉升了整体LTV。</p>
+      <div class="chips"><span class="chip">总下载 23.9M</span><span class="chip">总收入 $40.1M</span><span class="chip">月收入峰值 $270万 (2025/8)</span></div>
+      <div class="note">2025年月收入约为2024年同期的<strong>2-3倍</strong>，说明存量用户付费深度持续提升或新增高价值用户占比上升。</div>
+    </div>
+    <div class="ac info">
+      <h4>📊 西欧是被低估的高价值市场</h4>
+      <p>德国下载5.2%→收入8.1%，英国3.9%→7.7%，法国4.1%→3.0%，加拿大1.8%→3.3%，澳大利亚1.1%→3.0%。<strong>德英两国合计收入占比达15.8%</strong>，单用户价值远高于俄/印/巴。</p>
+      <div class="chips"><span class="chip">🇩🇪 下/收比 5.2:8.1</span><span class="chip">🇬🇧 下/收比 3.9:7.7</span><span class="chip">🇨🇦 下/收比 1.8:3.3</span></div>
+      <div class="note">西欧+英语圈（US/CA/AU/GB）合计收入占比超<strong>70%</strong>。若我方产品能精准切入英德法市场，ROI远高于流量大国。</div>
+    </div>
+    <div class="ac ref">
+      <h4>🎯 对我方产品的参考意义</h4>
+      <p>上线约30个月，下载高峰在2025年1月（<strong>224万/月</strong>）后趋于稳定在50-90万/月。收入却仍在增长——说明游戏靠运营与内容更新在持续深挖存量。</p>
+      <div class="chips"><span class="chip">下载峰值 224万/月 (2025/1)</span><span class="chip">当前月下载 ~49万</span><span class="chip">当前月收入 $137万</span></div>
+      <div class="note">机会点：该游戏在<strong>俄罗斯/印度/巴西变现极弱</strong>，若我方产品能在这些市场提供更好的本地化付费体验，可正面竞争。其<strong>订阅制+去广告</strong>的组合变现模式值得参考。</div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="card-footer">
+    <span class="footer-text">数据周期：上线至今（2023/09 – 2026/03）&nbsp;·&nbsp; 双平台 &nbsp;·&nbsp; 全球</span>
+    <span class="footer-text">数据来源：Sensor Tower &nbsp;·&nbsp; 生成时间：2026/03/25</span>
+  </div>
+
+</div>
+
+<script>
+const months = ["2023/9","2023/10","2023/11","2023/12","2024/1","2024/2","2024/3","2024/4","2024/5","2024/6","2024/7","2024/8","2024/9","2024/10","2024/11","2024/12","2025/1","2025/2","2025/3","2025/4","2025/5","2025/6","2025/7","2025/8","2025/9","2025/10","2025/11","2025/12","2026/1","2026/2","2026/3"];
+const dlData = [7483,40744,145856,50172,234998,220957,592459,248429,175025,437584,357609,594085,1111902,1411453,1848561,1268891,2242079,1494924,1102957,748549,1380065,1075021,941165,1026009,895483,749458,556595,870957,885442,694500,493464];
+const rvData = [3299,25301,59610,28039,61033,82905,167089,276784,242772,294633,474643,792344,1093723,1339845,1563722,1729695,2090536,1933503,2254763,2240896,2272151,2179414,2335213,2694146,2403198,2277023,2096787,2034689,1949545,1698213,1374068];
+
+const commonOpts = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { display: false }, ticks: { font: { size: 9 }, color: '#a0aec0', maxRotation: 45, maxTicksLimit: 12 } },
+    y: { grid: { color: '#f0f2f5' }, ticks: { font: { size: 10 }, color: '#a0aec0' } }
+  }
+};
+
+// 下载量图
+new Chart(document.getElementById('dlChart'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [{
+      data: dlData,
+      borderColor: '#3182ce',
+      backgroundColor: 'rgba(49,130,206,0.08)',
+      fill: true, tension: 0.4, pointRadius: 2,
+      pointBackgroundColor: '#3182ce', borderWidth: 2
+    }]
+  },
+  options: {
+    ...commonOpts,
+    plugins: { ...commonOpts.plugins, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' 次' } } },
+    scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, ticks: { ...commonOpts.scales.y.ticks, callback: v => v >= 1000000 ? (v/1000000).toFixed(1)+'M' : v >= 1000 ? (v/1000).toFixed(0)+'K' : v } } }
+  }
+});
+
+// 收入图
+new Chart(document.getElementById('rvChart'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [{
+      data: rvData,
+      borderColor: '#3a7d12',
+      backgroundColor: 'rgba(58,125,18,0.08)',
+      fill: true, tension: 0.4, pointRadius: 2,
+      pointBackgroundColor: '#3a7d12', borderWidth: 2
+    }]
+  },
+  options: {
+    ...commonOpts,
+    plugins: { ...commonOpts.plugins, tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.y.toLocaleString() } } },
+    scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, ticks: { ...commonOpts.scales.y.ticks, callback: v => '$' + (v >= 1000000 ? (v/1000000).toFixed(1)+'M' : v >= 1000 ? (v/1000).toFixed(0)+'K' : v) } } }
+  }
+});
+</script>
+</body>
+</html>

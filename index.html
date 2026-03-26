@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>游戏数据卡片库</title>
+  <link rel="stylesheet" href="./site.css">
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Claude Code Workspace</p>
+        <h1>游戏数据卡片库</h1>
+        <p class="hero-desc">集中管理你后续生成的竞品分析 HTML 卡片。支持搜索、排序、筛选，并直接打开原始卡片。</p>
+      </div>
+      <div class="hero-meta">
+        <div class="stat">
+          <span class="stat-label">当前卡片数</span>
+          <strong id="cardCount">--</strong>
+        </div>
+        <div class="stat">
+          <span class="stat-label">最近刷新</span>
+          <strong id="generatedAt">--</strong>
+        </div>
+      </div>
+    </header>
+
+    <section class="toolbar">
+      <div class="search-box">
+        <input id="searchInput" type="search" placeholder="搜索游戏名、文件名、标签...">
+      </div>
+      <div class="toolbar-actions">
+        <select id="sortSelect">
+          <option value="updated-desc">按更新时间（新→旧）</option>
+          <option value="updated-asc">按更新时间（旧→新）</option>
+          <option value="title-asc">按标题（A→Z）</option>
+          <option value="title-desc">按标题（Z→A）</option>
+        </select>
+        <select id="filterSelect">
+          <option value="all">全部卡片</option>
+          <option value="竞品分析卡片">竞品分析卡片</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="summary-row">
+      <div id="resultSummary" class="result-summary">正在加载卡片索引...</div>
+      <button id="refreshHintBtn" class="refresh-hint-btn" type="button">如何刷新索引</button>
+    </section>
+
+    <section id="emptyState" class="empty-state hidden">
+      <h2>没有找到匹配的卡片</h2>
+      <p>试试调整搜索词或筛选条件。</p>
+    </section>
+
+    <section id="cardGrid" class="card-grid"></section>
+  </div>
+
+  <dialog id="refreshDialog" class="dialog">
+    <h3>刷新卡片索引</h3>
+    <p>新增或删除卡片后，运行下面命令即可更新首页列表：</p>
+    <pre><code>node "C:/Users/yonghong.rao/Desktop/Claude_Code_Workspace/02_Projects/refresh_index.js"</code></pre>
+    <form method="dialog">
+      <button>知道了</button>
+    </form>
+  </dialog>
+
+  <script src="./site.js"></script>
+</body>
+</html>

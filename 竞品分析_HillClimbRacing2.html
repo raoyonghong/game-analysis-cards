@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>竞品分析 - Hill Climb Racing 2</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f2f5; padding: 24px; color: #1a1a2e; }
+.card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 920px; margin: 0 auto; overflow: hidden; }
+.card-header { background: linear-gradient(135deg, #1b1f3b 0%, #3f51b5 100%); padding: 28px 32px; display: flex; align-items: center; gap: 18px; }
+.app-badge { width: 72px; height: 72px; border-radius: 16px; background: #5c6bc0; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; flex-shrink: 0; }
+.app-info h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.subtitle { font-size: 13px; color: rgba(255,255,255,0.78); }
+.tags { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+.tag { background: rgba(255,255,255,0.12); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 999px; }
+.section-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 16px 32px 8px; border-top: 1px solid #f0f2f5; }
+.overview-row, .kpi-row { display: grid; }
+.overview-row { grid-template-columns: repeat(3, 1fr); }
+.kpi-row { grid-template-columns: repeat(4, 1fr); border-top: 1px solid #f0f2f5; }
+.item, .kpi-item { padding: 18px 20px; text-align: center; border-right: 1px solid #f0f2f5; }
+.item:last-child, .kpi-item:last-child { border-right: none; }
+.item-label, .kpi-label { font-size: 11px; color: #64748b; margin-bottom: 6px; }
+.item-value { font-size: 24px; font-weight: 700; color: #5c6bc0; }
+.kpi-value { font-size: 26px; font-weight: 700; color: #1f2937; }
+.item-sub, .kpi-sub { font-size: 10px; color: #94a3b8; margin-top: 4px; }
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #f0f2f5; }
+.chart-box { padding: 20px 24px; border-right: 1px solid #f0f2f5; }
+.chart-box:last-child { border-right: none; }
+.chart-title { font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 12px; }
+.chart-wrap { position: relative; height: 180px; }
+.section { padding: 0 32px 24px; }
+.section-title { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 16px 0 12px; border-top: 1px solid #f0f2f5; }
+.country-table { width: 100%; border-collapse: collapse; }
+.country-table th { font-size: 11px; color: #64748b; font-weight: 600; text-align: left; padding: 8px 10px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; }
+.country-table th.r { text-align: right; }
+.country-table td { padding: 10px; font-size: 13px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
+.country-table tr:last-child td { border-bottom: none; }
+.rank-badge { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; background: #5c6bc0; color: #fff; }
+.num { text-align: right; color: #475569; }
+.bar-wrap { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.bar-bg { width: 74px; height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+.bar { height: 100%; border-radius: 999px; }
+.bar-dl { background: linear-gradient(90deg, #3b82f6, #93c5fd); }
+.bar-rv { background: linear-gradient(90deg, #16a34a, #86efac); }
+.pct { min-width: 44px; text-align: right; font-size: 12px; font-weight: 700; color: #334155; }
+.insights { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 32px 28px; }
+.insight-card { background: #f3f5ff; border-left: 4px solid #5c6bc0; border-radius: 10px; padding: 16px 18px; }
+.insight-card h4 { font-size: 12px; color: #334155; margin-bottom: 8px; }
+.insight-card p { font-size: 12px; line-height: 1.7; color: #334155; }
+.card-footer { background: #f8fafc; padding: 12px 32px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; gap: 12px; flex-wrap: wrap; }
+.footer-text { font-size: 11px; color: #94a3b8; }
+@media (max-width: 800px) {
+  .overview-row, .kpi-row, .charts-row, .insights { grid-template-columns: 1fr; }
+  .item, .kpi-item, .chart-box { border-right: none; border-bottom: 1px solid #f0f2f5; }
+  .chart-box:last-child, .kpi-item:last-child, .item:last-child { border-bottom: none; }
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="card-header">
+    <div class="app-badge">HC</div>
+    <div class="app-info">
+      <h1>Hill Climb Racing 2</h1>
+      <div class="subtitle">Fingersoft · iOS + Android · 芬兰发行</div>
+      <div class="tags"><span class="tag">街机驾驶</span><span class="tag">2D 卡通</span><span class="tag">角色收集</span><span class="tag">多人PvP</span><span class="tag">公会</span><span class="tag">UGC</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">维度一 · 基础概览</div>
+  <div class="overview-row">
+    <div class="item">
+      <div class="item-label">全球上线时间</div>
+      <div class="item-value">2016/11/27</div>
+      <div class="item-sub">数据来源：Sensor Tower</div>
+    </div>
+    <div class="item">
+      <div class="item-label">上线至今总下载</div>
+      <div class="item-value">436.5M</div>
+      <div class="item-sub">全球 · 所有时间</div>
+    </div>
+    <div class="item">
+      <div class="item-label">上线至今总收入</div>
+      <div class="item-value">$97.1M</div>
+      <div class="item-sub">全球 · 所有时间</div>
+    </div>
+  </div>
+
+  <div class="section-label">维度二 · 近30天核心指标</div>
+  <div class="kpi-row">
+    <div class="kpi-item">
+      <div class="kpi-label">下载量</div>
+      <div class="kpi-value">2.4M</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">收入</div>
+      <div class="kpi-value">$1.1M</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">RPD</div>
+      <div class="kpi-value">$0.22</div>
+      <div class="kpi-sub">全球 · 所有时间</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">平均DAU</div>
+      <div class="kpi-value">1.6M</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+  </div>
+
+  <div class="section-label">维度三 · 上线至今月度趋势</div>
+  <div class="charts-row">
+    <div class="chart-box">
+      <div class="chart-title">月度下载量趋势</div>
+      <div class="chart-wrap"><canvas id="dlChart"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">月度收入趋势</div>
+      <div class="chart-wrap"><canvas id="rvChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">维度四 · 上线至今 Top 5 国家表现</div>
+    <table class="country-table">
+      <thead>
+        <tr>
+          <th style="width: 32px;">#</th>
+          <th>国家</th>
+          <th class="r">下载量</th>
+          <th class="r" style="width: 150px;">下载占比</th>
+          <th class="r">净收入</th>
+          <th class="r" style="width: 150px;">净收入占比</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="rank-badge">1</span></td>
+        <td>印度</td>
+        <td class="num">110,988,876</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:100%"></div></div><span class="pct">25.4%</span></div>
+        </td>
+        <td class="num">$416,463</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:8%"></div></div><span class="pct">0.4%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">2</span></td>
+        <td>美国</td>
+        <td class="num">39,918,367</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:35.966097178964134%"></div></div><span class="pct">9.1%</span></div>
+        </td>
+        <td class="num">$45,420,597</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:100%"></div></div><span class="pct">46.8%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">3</span></td>
+        <td>巴西</td>
+        <td class="num">24,937,701</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:22.4686490202856%"></div></div><span class="pct">5.7%</span></div>
+        </td>
+        <td class="num">$919,439</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:8%"></div></div><span class="pct">0.9%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">4</span></td>
+        <td>俄罗斯</td>
+        <td class="num">18,794,237</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:16.933442050534868%"></div></div><span class="pct">4.3%</span></div>
+        </td>
+        <td class="num">$1,483,791</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:8%"></div></div><span class="pct">1.5%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">5</span></td>
+        <td>印度尼西亚</td>
+        <td class="num">18,291,970</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:16.480903906081544%"></div></div><span class="pct">4.2%</span></div>
+        </td>
+        <td class="num">$335,748</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:8%"></div></div><span class="pct">0.3%</span></div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">数据分析洞察</div>
+  <div class="insights">
+      <div class="insight-card">
+        <h4>市场集中度</h4>
+        <p>印度贡献25.4%下载、0.4%收入。 下载集中但收入承接偏弱，核心市场流量价值有待验证。</p>
+      </div>
+      <div class="insight-card">
+        <h4>变现效率</h4>
+        <p>上线至今RPD约为$0.22。 近30天下载/收入折算RPD约为$0.46。 近30天平均DAU为1.6M。</p>
+      </div>
+      <div class="insight-card">
+        <h4>区域结构</h4>
+        <p>美国收入占比高于下载占比，属于高价值市场；印度下载占比高于收入占比，属于相对低变现市场。</p>
+      </div>
+      <div class="insight-card">
+        <h4>趋势判断</h4>
+        <p>下载峰值出现在2019/4（5.87M），收入峰值出现在2025/12（$1.7M）。 当前下载已明显低于历史高点，增长热度趋缓。</p>
+      </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-text">数据周期：2018/1 - 2026/3 · 全球</span>
+    <span class="footer-text">数据来源：Sensor Tower · 生成时间：2026/03/26</span>
+  </div>
+</div>
+
+<script>
+const labels = ["2018/1","2018/2","2018/3","2018/4","2018/5","2018/6","2018/7","2018/8","2018/9","2018/10","2018/11","2018/12","2019/1","2019/2","2019/3","2019/4","2019/5","2019/6","2019/7","2019/8","2019/9","2019/10","2019/11","2019/12","2020/1","2020/2","2020/3","2020/4","2020/5","2020/6","2020/7","2020/8","2020/9","2020/10","2020/11","2020/12","2021/1","2021/2","2021/3","2021/4","2021/5","2021/6","2021/7","2021/8","2021/9","2021/10","2021/11","2021/12","2022/1","2022/2","2022/3","2022/4","2022/5","2022/6","2022/7","2022/8","2022/9","2022/10","2022/11","2022/12","2023/1","2023/2","2023/3","2023/4","2023/5","2023/6","2023/7","2023/8","2023/9","2023/10","2023/11","2023/12","2024/1","2024/2","2024/3","2024/4","2024/5","2024/6","2024/7","2024/8","2024/9","2024/10","2024/11","2024/12","2025/1","2025/2","2025/3","2025/4","2025/5","2025/6","2025/7","2025/8","2025/9","2025/10","2025/11","2025/12","2026/1","2026/2","2026/3"];
+const dlData = [2695429,3558995,5565201,3367758,3606360,4002706,4552458,3979891,3654100,3738876,3320963,3903702,3851960,2981265,3332157,5870605,3354855,2801606,2824589,3151443,3018924,2981416,2681581,3550733,3156648,2929104,3819110,4043808,3923703,5084224,3597111,3113291,3154319,2850322,2629778,2564423,2773300,3175215,3237564,3441275,4164743,3303884,2931877,2978245,2759519,2563734,2184869,2740882,3287118,2903954,3030201,2939007,2890363,2895296,2444711,2550851,2625051,2867998,2395390,3464714,4662321,3892118,3901588,5668391,4551011,5409941,4883112,4719046,5850011,4279226,4800130,3663732,5017159,3364997,3278510,3894923,3816853,4430790,4202517,3762562,4353171,3257707,3590355,2965250,2802070,2239376,2489840,3763279,3388737,3516370,3001103,3124669,3878232,3062971,2453410,2121908,3175177,2327878,1981396];
+const rvData = [785935,750168,1073787,871993,778194,664245,622677,592175,581578,621045,616133,866328,660265,648944,583678,566554,646819,700969,939261,895473,867015,908139,896424,1047735,972893,908368,1114175,1239488,1108400,921246,969914,947412,811776,932525,1165099,1198853,1189761,1036190,1103649,1015539,913683,812354,820267,804942,740604,851735,949144,958618,892642,813878,762864,753646,824727,683600,663141,682188,609926,671568,737824,781915,708630,639918,751086,985280,782395,710883,698456,674147,699340,748810,913967,795471,682632,647481,741211,759363,646899,660889,678242,662383,722421,746390,1213627,1153865,864748,784045,794918,1243638,940556,922069,985768,1105491,1240604,1235848,1133014,1697850,1253685,1132237,900378];
+const commonOpts = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { display: false }, ticks: { color: '#94a3b8', maxRotation: 45, autoSkip: true, maxTicksLimit: 12 } },
+    y: { grid: { color: '#f1f5f9' }, ticks: { color: '#94a3b8' } }
+  }
+};
+new Chart(document.getElementById('dlChart'), {
+  type: 'line',
+  data: { labels, datasets: [{ data: dlData, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.35, pointRadius: 2, borderWidth: 2 }] },
+  options: {
+    ...commonOpts,
+    plugins: { ...commonOpts.plugins, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' 次' } } },
+    scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, ticks: { ...commonOpts.scales.y.ticks, callback: v => v >= 1000000 ? (v/1000000).toFixed(1) + 'M' : v >= 1000 ? (v/1000).toFixed(0) + 'K' : v } } }
+  }
+});
+new Chart(document.getElementById('rvChart'), {
+  type: 'line',
+  data: { labels, datasets: [{ data: rvData, borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.08)', fill: true, tension: 0.35, pointRadius: 2, borderWidth: 2 }] },
+  options: {
+    ...commonOpts,
+    plugins: { ...commonOpts.plugins, tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.y.toLocaleString() } } },
+    scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, ticks: { ...commonOpts.scales.y.ticks, callback: v => '$' + (v >= 1000000 ? (v/1000000).toFixed(1) + 'M' : v >= 1000 ? (v/1000).toFixed(0) + 'K' : v) } } }
+  }
+});
+</script>
+</body>
+</html>
