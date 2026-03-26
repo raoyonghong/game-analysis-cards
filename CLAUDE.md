@@ -26,9 +26,48 @@
 
 ---
 
-## 线上网站
+## GitHub 仓库
 
-**Netlify 地址：** https://boisterous-hotteok-f473bf.netlify.app
+**GitHub：** https://github.com/raoyonghong/game-analysis-cards
+
+任何设备换了都可以用：
+```bash
+git clone https://github.com/raoyonghong/game-analysis-cards
+cd game-analysis-cards
+```
+
+---
+
+## 多设备工作流（换了电脑怎么操作）
+
+### 首次在新设备上使用
+```bash
+# 1. 安装依赖工具
+npm install -g netlify-cli
+
+# 2. 克隆项目（路径随意，不再绑定固定目录）
+git clone https://github.com/raoyonghong/game-analysis-cards
+cd game-analysis-cards
+
+# 3. 登录 GitHub CLI（如果需要）
+gh auth login
+
+# 4. 登录 Netlify CLI（如果需要）
+netlify login
+```
+
+### 日常新增卡片后，更新网站只需两步
+```bash
+# 1. 提交所有改动
+git add .
+git commit -m "新增 xxx 卡片"
+git push origin master
+
+# ↑ push 后 Netlify 自动触发部署，约 30 秒网站自动更新
+# 不需要再手动跑 netlify deploy
+```
+
+---
 
 登录账号：raoyonghong@126.com
 Netlify 管理后台：https://app.netlify.com/projects/boisterous-hotteok-f473bf
