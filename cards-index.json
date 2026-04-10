@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-03-26T12:10:31.778Z",
-  "total": 13,
+  "generatedAt": "2026-04-10T06:44:02.362Z",
+  "total": 14,
   "cards": [
     {
       "title": "Dream Mania - Match 3 Games",
@@ -111,6 +111,22 @@
       "iconUrl": "https://play-lh.googleusercontent.com/eYcjGgWCE-1yZy0Nmogmjs0ZW13bAN9jTKc4L4jndv76A_LjuBbCADLglWNXqe51_5XFZXnAlZwvF-nVQ7c9m3g",
       "totalDownloads": "25,906,856",
       "totalRevenue": "$28,140,691"
+    },
+    {
+      "title": "Soccer Duel: Football Game",
+      "fileName": "竞品分析_SoccerDuel.html",
+      "relativePath": "./竞品分析_SoccerDuel.html",
+      "updatedAt": "2026-04-10T06:43:08.756Z",
+      "updatedAtText": "2026-04-10 06:43:08",
+      "sourceType": "体育经理人",
+      "tags": [
+        "竞品分析卡片",
+        "竞技"
+      ],
+      "slug": "竞品分析_SoccerDuel",
+      "iconUrl": "https://assets.sensortower-china.com/HztbfAzLT59UHX7L2bTToaGZD2vqcC9_R-MmBori64vCxR_swq7KZ4Ff83Pz2XICA9E=s150",
+      "totalDownloads": "1,448,796",
+      "totalRevenue": "$201,593"
     },
     {
       "title": "스톤에이지 키우기",
