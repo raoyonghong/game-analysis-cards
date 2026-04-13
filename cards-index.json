@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-10T06:44:02.362Z",
-  "total": 14,
+  "generatedAt": "2026-04-13T05:36:54.574Z",
+  "total": 15,
   "cards": [
     {
       "title": "Dream Mania - Match 3 Games",
@@ -143,6 +143,21 @@
       "iconUrl": "https://play-lh.googleusercontent.com/mHJqRu4jWQURdoJTkJYcqPvd1atYDkx4EGEuv3olhT8MFdDW1jYNGyFLmOkr8plJmQZmmSc7v744iYJk09Nc7A",
       "totalDownloads": "935,793",
       "totalRevenue": "$8,148,834"
+    },
+    {
+      "title": "Tomb of the Mask: Pixel Maze",
+      "fileName": "竞品分析_TombOfTheMask.html",
+      "relativePath": "./竞品分析_TombOfTheMask.html",
+      "updatedAt": "2026-04-13T05:28:50.505Z",
+      "updatedAtText": "2026-04-13 05:28:50",
+      "sourceType": "平台跑酷",
+      "tags": [
+        "竞品分析卡片"
+      ],
+      "slug": "竞品分析_TombOfTheMask",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/e7/17/45/e717455e-b2e2-2f8c-a555-5e9cf9c4832f/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/150x150bb.jpg",
+      "totalDownloads": "526,501,855",
+      "totalRevenue": "数据受限"
     },
     {
       "title": "War Drone: 3D Shooting Games",
