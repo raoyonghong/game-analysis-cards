@@ -1,0 +1,68 @@
+# scripts/ — 竞品分析卡片工具链
+
+所有脚本通过相对路径运行，从项目根目录 clone 下来即可在任意机器上使用。
+
+## 前置条件
+
+1. **Edge 必须用调试端口启动**，且 Sensor Tower 已登录：
+   ```bash
+   # Windows：先杀光所有 Edge 进程（必须，否则旧实例会占用但不开调试端口）
+   taskkill //IM msedge.exe //F
+   # 再用默认 profile 启动（保留登录态）
+   powershell -Command "Start-Process 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' -ArgumentList '--remote-debugging-port=9222','https://app.sensortower-china.com/'"
+   ```
+   验证：`curl http://127.0.0.1:9222/json/version` 返回 JSON（不是 404）。
+
+2. 安装依赖：`cd scripts && npm install`
+
+## 工作流
+
+```bash
+# 1. 搜索游戏名 → 得到 unified_app_id
+node search_games.js "Polygun Arena: Online Shooter" "Punch TV"
+
+# 2. 把游戏清单（name/slug/uid）填入 batch_collect.js 顶部的 GAMES 数组，然后采集
+node batch_collect.js       # 输出 .data/batch_<slug>.json
+
+# 3. 把相同清单（带 badge/subtitleExtra/tags）填入 generate_comp_cards.js 顶部的 GAMES，然后生成
+node generate_comp_cards.js # 输出 ../竞品分析_<slug>.html
+
+# 4. 更新 game-meta.json（icon/genre/总量）
+node update_meta.js
+
+# 5. 注入中/英语言切换（幂等可重复）
+cd .. && node patch_card_lang.js
+
+# 6. 刷新索引
+node refresh_index.js
+
+# 7. 提交推送（Netlify 自动部署，~30s）
+git add . && git commit -m "新增 xxx 卡片" && git push origin master
+```
+
+## 文件说明
+
+| 文件 | 作用 |
+|------|------|
+| `cdp.js` | CDP WebSocket 工具模块（Edge DevTools Protocol 客户端） |
+| `search_games.js` | 通过 `/api/autocomplete_search` 按游戏名找 `unified_app_id` |
+| `batch_collect.js` | 采集 overview + 月度销售估算（iOS + Android） |
+| `generate_comp_cards.js` | 从 `.data/batch_*.json` 生成竞品分析 HTML 卡片 |
+| `update_meta.js` | 提取图标/子类/总量更新 `../game-meta.json` |
+| `.data/` | 采集的原始 JSON（git 忽略） |
+
+## ST API 要点（2026-04 实测）
+
+- **搜索**：`GET /api/autocomplete_search?entity_type=app&expand_entities=true&os=unified&term=<name>` → `data.entities[0].app_id` 即 unified_app_id
+- **概览**：`GET /api/unified/apps/<uid>` → 含 `worldwide_release_date`、`worldwide_last_30_days_*`、`icon_url`、`sub_genre`、`sub_apps[]`
+- **月度时序**（按国家）：
+  - `GET /api/ios/serialized_sales_report_estimates?start_date=...&end_date=...&date_granularity=monthly&unified_app_ids[]=<uid>`
+  - `GET /api/android/serialized_sales_report_estimates?...`
+  - iOS 行 schema：`[unix_ts, cc, revenue_cents, downloads, iap_revenue_cents, iap_downloads]` — 全球值需 `r+iap_r`、`d+iap_d`
+  - Android 行 schema：`[unix_ts, cc, revenue_cents, downloads]`
+  - `countries[]` 参数对此端点**无效**（总返回所有国家），按国家拆分要从返回结果中自行聚合
+
+**已失效的 API（文档里老版本，不要用）**：
+- `/api/apps/timeseries/regions` → 404
+- `/api/apps/timeseries/unified_apps` 带 `regions`/`countries`/`group_by`/`breakdown_attribute` → 422
+- `/api/unified/serialized_sales_report_estimates` → 404（只有 ios/android 两条路径）

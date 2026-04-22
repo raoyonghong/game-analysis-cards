@@ -5,3 +5,7 @@ Thumbs.db
 
 # Local Netlify folder
 .netlify
+
+# scripts tooling
+scripts/.data/
+scripts/node_modules/

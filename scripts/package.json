@@ -1,0 +1,9 @@
+{
+  "name": "card-scripts",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Scripts for collecting Sensor Tower data and generating competitive analysis HTML cards.",
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
+}
