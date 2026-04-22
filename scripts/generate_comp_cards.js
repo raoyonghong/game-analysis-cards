@@ -166,6 +166,7 @@ function generateCard(game, raw) {
 
   const pub = overview.unified_publisher_name || '—';
   const subtitle = `${pub} · ${platformTxt} · ${game.subtitleExtra}`;
+  const iconUrl = overview.icon_url || (overview.sub_apps?.[0]?.icon_url) || null;
 
   // palette
   const P = pickPalette(game.slug);
@@ -231,6 +232,7 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f
 .card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 920px; margin: 0 auto; overflow: hidden; }
 .card-header { background: linear-gradient(135deg, #1a1a2e 0%, ${P.headerEnd} 100%); padding: 28px 32px; display: flex; align-items: center; gap: 18px; }
 .app-badge { width: 72px; height: 72px; border-radius: 16px; background: ${P.accent}; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; flex-shrink: 0; }
+.app-badge-img { width: 72px; height: 72px; border-radius: 16px; object-fit: cover; background: #fff; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
 .app-info h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px; }
 .subtitle { font-size: 13px; color: rgba(255,255,255,0.78); }
 .tags { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
@@ -291,7 +293,9 @@ body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f
 
 <div class="card">
   <div class="card-header">
-    <div class="app-badge">${game.badge}</div>
+    ${iconUrl
+      ? `<img class="app-badge-img" src="${iconUrl}" alt="${game.badge}" loading="lazy" onerror="this.outerHTML='<div class=&quot;app-badge&quot;>${game.badge}</div>'">`
+      : `<div class="app-badge">${game.badge}</div>`}
     <div class="app-info">
       <h1>${overview.name}</h1>
       <div class="subtitle">${subtitle}</div>
