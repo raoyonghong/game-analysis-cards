@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>竞品分析 - Hill Climb Racing</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f2f5; padding: 24px; color: #1a1a2e; }
+.card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 920px; margin: 0 auto; overflow: hidden; }
+.card-header { background: linear-gradient(135deg, #1a1a2e 0%, #3f2506 100%); padding: 28px 32px; display: flex; align-items: center; gap: 18px; }
+.app-badge { width: 72px; height: 72px; border-radius: 16px; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; flex-shrink: 0; }
+.app-badge-img { width: 72px; height: 72px; border-radius: 16px; object-fit: cover; background: #fff; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+.app-info h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.subtitle { font-size: 13px; color: rgba(255,255,255,0.78); }
+.tags { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+.tag { background: rgba(255,255,255,0.12); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 999px; }
+.section-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 16px 32px 8px; border-top: 1px solid #f0f2f5; }
+.overview-row, .kpi-row { display: grid; }
+.overview-row { grid-template-columns: repeat(3, 1fr); }
+.kpi-row { grid-template-columns: repeat(4, 1fr); border-top: 1px solid #f0f2f5; }
+.item, .kpi-item { padding: 18px 20px; text-align: center; border-right: 1px solid #f0f2f5; }
+.item:last-child, .kpi-item:last-child { border-right: none; }
+.item-label, .kpi-label { font-size: 11px; color: #64748b; margin-bottom: 6px; }
+.item-value { font-size: 24px; font-weight: 700; color: #f59e0b; }
+.kpi-value { font-size: 26px; font-weight: 700; color: #1f2937; }
+.item-sub, .kpi-sub { font-size: 10px; color: #94a3b8; margin-top: 4px; }
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #f0f2f5; }
+.chart-box { padding: 20px 24px; border-right: 1px solid #f0f2f5; }
+.chart-box:last-child { border-right: none; }
+.chart-title { font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 12px; }
+.chart-wrap { position: relative; height: 180px; }
+.section { padding: 0 32px 24px; }
+.section-title { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 16px 0 12px; border-top: 1px solid #f0f2f5; }
+.country-table { width: 100%; border-collapse: collapse; }
+.country-table th { font-size: 11px; color: #64748b; font-weight: 600; text-align: left; padding: 8px 10px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; }
+.country-table th.r { text-align: right; }
+.country-table td { padding: 10px; font-size: 13px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
+.country-table tr:last-child td { border-bottom: none; }
+.rank-badge { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; background: #f59e0b; color: #fff; }
+.num { text-align: right; color: #475569; }
+.bar-wrap { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.bar-bg { width: 74px; height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+.bar { height: 100%; border-radius: 999px; }
+.bar-dl { background: linear-gradient(90deg, #3b82f6, #93c5fd); }
+.bar-rv { background: linear-gradient(90deg, #16a34a, #86efac); }
+.pct { min-width: 44px; text-align: right; font-size: 12px; font-weight: 700; color: #334155; }
+.insights { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 32px 28px; }
+.insight-card { background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 16px 18px; }
+.insight-card h4 { font-size: 12px; color: #334155; margin-bottom: 8px; }
+.insight-card p { font-size: 12px; line-height: 1.7; color: #334155; }
+.card-footer { background: #f8fafc; padding: 12px 32px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; gap: 12px; flex-wrap: wrap; }
+.footer-text { font-size: 11px; color: #94a3b8; }
+@media (max-width: 800px) {
+  .overview-row, .kpi-row, .charts-row, .insights { grid-template-columns: 1fr; }
+  .item, .kpi-item, .chart-box { border-right: none; border-bottom: 1px solid #f0f2f5; }
+  .chart-box:last-child, .kpi-item:last-child, .item:last-child { border-bottom: none; }
+}
+
+/* ── lang toggle ── */
+.lang-toggle-wrap { position: fixed; top: 16px; right: 16px; z-index: 999; }
+.lang-toggle-btn { background: rgba(30,30,60,0.82); color: #fff; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; backdrop-filter: blur(6px); }
+.lang-toggle-btn:hover { background: rgba(30,30,60,0.95); }
+
+
+/* ── lang toggle ── */
+.lang-toggle-wrap { position: fixed; top: 16px; right: 16px; z-index: 999; }
+.lang-toggle-btn { background: rgba(30,30,60,0.82); color: #fff; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; backdrop-filter: blur(6px); }
+.lang-toggle-btn:hover { background: rgba(30,30,60,0.95); }
+
+</style>
+</head>
+<body>
+<div class="lang-toggle-wrap">
+  <button id="langToggleBtn" class="lang-toggle-btn">EN</button>
+</div>
+
+<div class="lang-toggle-wrap">
+  <button id="langToggleBtn" class="lang-toggle-btn">EN</button>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <img class="app-badge-img" src="https://assets.sensortower-china.com/N0UxhBVUmx8s7y3F7Kqre2AcpXyPDKAp8nHjiPPoOONc_sfugHCYMjBpbUKCMlK_XUs=s150" alt="HI" loading="lazy" onerror="this.outerHTML='<div class=&quot;app-badge&quot;>HI</div>'">
+    <div class="app-info">
+      <h1>Hill Climb Racing</h1>
+      <div class="subtitle">Fingersoft · iOS + Android · 印度发行</div>
+      <div class="tags"><span class="tag">免费游戏</span><span class="tag">订阅</span><span class="tag">内购</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">维度一 · 基础概览</div>
+  <div class="overview-row">
+    <div class="item">
+      <div class="item-label">全球上线时间</div>
+      <div class="item-value">2012/09/22</div>
+      <div class="item-sub">数据来源：Sensor Tower</div>
+    </div>
+    <div class="item">
+      <div class="item-label">上线至今总下载</div>
+      <div class="item-value">982.3M</div>
+      <div class="item-sub">全球 · 所有时间</div>
+    </div>
+    <div class="item">
+      <div class="item-label">上线至今总收入</div>
+      <div class="item-value">$13.4M</div>
+      <div class="item-sub">全球 · 所有时间</div>
+    </div>
+  </div>
+
+  <div class="section-label">维度二 · 近30天核心指标</div>
+  <div class="kpi-row">
+    <div class="kpi-item">
+      <div class="kpi-label">下载量</div>
+      <div class="kpi-value">6.8M</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">收入</div>
+      <div class="kpi-value">$155K</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">RPD</div>
+      <div class="kpi-value">$0.03</div>
+      <div class="kpi-sub">全球 · 所有时间</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">平均DAU</div>
+      <div class="kpi-value">3.7M</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+  </div>
+
+  <div class="section-label">维度三 · 上线至今月度趋势</div>
+  <div class="charts-row">
+    <div class="chart-box">
+      <div class="chart-title">月度下载量趋势</div>
+      <div class="chart-wrap"><canvas id="dlChart"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">月度收入趋势</div>
+      <div class="chart-wrap"><canvas id="rvChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">维度四 · 上线至今 Top 5 国家表现</div>
+    <table class="country-table">
+      <thead>
+        <tr>
+          <th style="width: 32px;">#</th>
+          <th>国家</th>
+          <th class="r">下载量</th>
+          <th class="r" style="width: 150px;">下载占比</th>
+          <th class="r">净收入</th>
+          <th class="r" style="width: 150px;">净收入占比</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="rank-badge">1</span></td>
+        <td>印度</td>
+        <td class="num">364,328,571</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:100.0%"></div></div><span class="pct">37.1%</span></div>
+        </td>
+        <td class="num">$152,304</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:57.7%"></div></div><span class="pct">1.1%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">2</span></td>
+        <td>印尼</td>
+        <td class="num">44,874,139</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:12.3%"></div></div><span class="pct">4.6%</span></div>
+        </td>
+        <td class="num">$67,843</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:25.7%"></div></div><span class="pct">0.5%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">3</span></td>
+        <td>巴西</td>
+        <td class="num">44,746,416</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:12.3%"></div></div><span class="pct">4.6%</span></div>
+        </td>
+        <td class="num">$166,172</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:62.9%"></div></div><span class="pct">1.2%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">4</span></td>
+        <td>墨西哥</td>
+        <td class="num">43,532,657</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:11.9%"></div></div><span class="pct">4.4%</span></div>
+        </td>
+        <td class="num">$118,891</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:45.0%"></div></div><span class="pct">0.9%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">5</span></td>
+        <td>俄罗斯</td>
+        <td class="num">41,769,608</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:11.5%"></div></div><span class="pct">4.3%</span></div>
+        </td>
+        <td class="num">$264,105</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:100.0%"></div></div><span class="pct">2.0%</span></div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">数据分析洞察</div>
+  <div class="insights">
+      <div class="insight-card">
+        <h4>市场集中度</h4>
+        <p>印度贡献37.1%下载、1.1%收入。 前5国家累计贡献54.9%下载，分布相对均衡。</p>
+      </div>
+      <div class="insight-card">
+        <h4>变现效率</h4>
+        <p>上线至今RPD约为$0.03。 近30天RPD约为$0.02。 近30天平均DAU为3.7M。</p>
+      </div>
+      <div class="insight-card">
+        <h4>区域结构</h4>
+        <p>前5国家累计贡献 54.9% 的下载。 印度、印尼、巴西、墨西哥、俄罗斯为相对低变现市场。</p>
+      </div>
+      <div class="insight-card">
+        <h4>趋势判断</h4>
+        <p>下载峰值出现在2023/5（9.3M），收入峰值出现在2014/2（$356K）。 当前下载已明显低于历史高点，增长热度趋缓。</p>
+      </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-text">数据周期：2014/1 - 2026/4 · 全球</span>
+    <span class="footer-text">数据来源：Sensor Tower · 生成时间：2026/04/22</span>
+  </div>
+</div>
+
+<script>
+const labels = ["2014/1","2014/2","2014/3","2014/4","2014/5","2014/6","2014/7","2014/8","2014/9","2014/10","2014/11","2014/12","2015/1","2015/2","2015/3","2015/4","2015/5","2015/6","2015/7","2015/8","2015/9","2015/10","2015/11","2015/12","2016/1","2016/2","2016/3","2016/4","2016/5","2016/6","2016/7","2016/8","2016/9","2016/10","2016/11","2016/12","2017/1","2017/2","2017/3","2017/4","2017/5","2017/6","2017/7","2017/8","2017/9","2017/10","2017/11","2017/12","2018/1","2018/2","2018/3","2018/4","2018/5","2018/6","2018/7","2018/8","2018/9","2018/10","2018/11","2018/12","2019/1","2019/2","2019/3","2019/4","2019/5","2019/6","2019/7","2019/8","2019/9","2019/10","2019/11","2019/12","2020/1","2020/2","2020/3","2020/4","2020/5","2020/6","2020/7","2020/8","2020/9","2020/10","2020/11","2020/12","2021/1","2021/2","2021/3","2021/4","2021/5","2021/6","2021/7","2021/8","2021/9","2021/10","2021/11","2021/12","2022/1","2022/2","2022/3","2022/4","2022/5","2022/6","2022/7","2022/8","2022/9","2022/10","2022/11","2022/12","2023/1","2023/2","2023/3","2023/4","2023/5","2023/6","2023/7","2023/8","2023/9","2023/10","2023/11","2023/12","2024/1","2024/2","2024/3","2024/4","2024/5","2024/6","2024/7","2024/8","2024/9","2024/10","2024/11","2024/12","2025/1","2025/2","2025/3","2025/4","2025/5","2025/6","2025/7","2025/8","2025/9","2025/10","2025/11","2025/12","2026/1","2026/2","2026/3","2026/4"];
+const dlData = [8404743,6523500,6725010,6200783,6067763,5219675,5709276,5586882,5040290,5694505,5953444,7499326,7955621,6292931,6478768,5635880,5523802,5442008,6018627,5750403,5763773,5774406,5229693,6319419,7973083,6755932,6276585,5840418,6244983,6018611,6596226,6412311,6121132,6671217,5989878,7214419,6435379,5363816,5312114,5186448,5442988,5281226,5442793,5641328,5243479,5725525,5125859,5878470,5616744,5347693,6055818,5889131,6150894,7195649,6438782,6917740,6497777,6888385,6814906,7594310,7564794,6540952,8200922,8391807,9063866,7456080,6513873,7107154,6250210,6869760,6103053,6999986,7349626,6515497,8611060,9274015,9207353,8474808,8654191,8594726,8621909,8281182,7405147,7136386,8222612,5717282,5615111,7039859,7171999,7458768,8189778,8988002,8897140,6605520,7035992,6231486,8236942,6215395,6885845,7407414,5189291,8423282,6400818,5918698,6733042,7544627,5814988,7103256,8104253,6665029,7216068,8021983,9296209,7707587,7592138,8270122,8617865,7239555,6020168,6010678,6519619,8639631,5749809,6717034,7002233,7969607,6767310,6697579,6525326,5874416,5913104,6772136,5755890,4157116,5663964,5796099,6127402,6950791,6087445,5979444,5541560,6448529,4748302,4921846,5605731,4179086,5742480,4054536];
+const rvData = [333955.6,355951.69,326254.68,263067.74,270862.77,223973.59,236762.62,209342.65,209366.32,230492,222208.17,234036.84,220828.01,174395.55,162243.02,172555.09,141894.75,132734.17,133384.86,136703.52,128991.35,139745.63,153761.15,231931.81,169610.31,134705.52,134369.03,109922.09,107951.38,104103.97,147293.01,121285.57,100936.87,107005.21,95028.17,142713.91,159646.1,117508.52,90506.71,89655.5,83305.5,78621.78,80641.14,97674.76,77156.87,90235.24,90849.96,105675.7,98440.92,94830.46,95070.12,83549.98,80230.01,80317.3,81080.97,74943.62,75175.61,76499.35,76625.32,88820.11,76749.84,66548.39,85034.01,79172.88,85764.25,88883.68,82162.58,86150.65,77308.68,66329.95,62248.91,75928.85,75284.56,65479.37,71240.94,66791.09,58059.71,54873.05,58644.01,61203.9,59789.45,60990.91,60924.8,66342.48,68735.24,58003.25,69516.29,61819.6,60409.86,56128.9,61917.49,62052.63,58859.58,62394,56308.35,58382.14,56788.09,47381.06,50441.07,51167.31,46757.27,41699.07,44264.14,43714.81,42617.57,53717.16,53922.94,49403.88,52957.62,44809.29,48154.14,49212.74,47864.14,44451.83,46145,44861.52,48217.08,50052.24,46091.41,48035.12,44428.1,44012.89,47443.7,40958.86,37842.72,39742.21,39849.16,41885.98,35497,40927.18,41774.44,45860.67,42927.39,34541.21,44109.18,43147.89,44791.26,40083.49,42368.08,42759.1,37649.12,41282.7,36199.2,39905.33,41831.09,38438.95,45761.44,37178.87];
+const commonOpts = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { display: false }, ticks: { color: '#94a3b8', maxRotation: 45, autoSkip: true, maxTicksLimit: 12 } },
+    y: { grid: { color: '#f1f5f9' }, ticks: { color: '#94a3b8' } }
+  }
+};
+new Chart(document.getElementById('dlChart'), {
+  type: 'line',
+  data: { labels, datasets: [{ data: dlData, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.35, pointRadius: 2, borderWidth: 2 }] },
+  options: {
+    ...commonOpts,
+    plugins: { ...commonOpts.plugins, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' 次' } } },
+    scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, ticks: { ...commonOpts.scales.y.ticks, callback: v => v >= 1000000 ? (v/1000000).toFixed(1) + 'M' : v >= 1000 ? (v/1000).toFixed(0) + 'K' : v } } }
+  }
+});
+new Chart(document.getElementById('rvChart'), {
+  type: 'line',
+  data: { labels, datasets: [{ data: rvData, borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.08)', fill: true, tension: 0.35, pointRadius: 2, borderWidth: 2 }] },
+  options: {
+    ...commonOpts,
+    plugins: { ...commonOpts.plugins, tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.y.toLocaleString() } } },
+    scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, ticks: { ...commonOpts.scales.y.ticks, callback: v => '$' + (v >= 1000000 ? (v/1000000).toFixed(1) + 'M' : v >= 1000 ? (v/1000).toFixed(0) + 'K' : v) } } }
+  }
+});
+</script>
+
+
+<script id="card-i18n">
+(function(){
+  const ZH_EN = {
+  "维度一 · 基础概览": "Overview",
+  "维度二 · 近30天核心指标": "KPIs · Last 30 Days",
+  "维度三 · 上线至今月度趋势": "Monthly Trend",
+  "维度四 · 上线至今 Top 5 国家表现": "Top 5 Countries (All-time)",
+  "数据分析洞察": "Insights",
+  "全球上线时间": "Global Launch",
+  "上线至今总下载": "Total Downloads",
+  "上线至今总收入": "Total Revenue",
+  "数据来源：Sensor Tower": "Source: Sensor Tower",
+  "全球 · 所有时间": "Global · All-time",
+  "全球 · 近30天": "Global · 30d",
+  "下载量": "Downloads",
+  "收入": "Revenue",
+  "平均DAU": "Avg DAU",
+  "月度下载量趋势": "Monthly Downloads",
+  "月度收入趋势": "Monthly Revenue",
+  "国家": "Country",
+  "下载占比": "DL Share",
+  "净收入": "Net Revenue",
+  "净收入占比": "Rev Share",
+  "市场集中度": "Market Concentration",
+  "变现效率": "Monetization",
+  "区域结构": "Regional Mix",
+  "趋势判断": "Trend"
+};
+  // reverse map
+  const EN_ZH = {};
+  for(const [k,v] of Object.entries(ZH_EN)) EN_ZH[v]=k;
+
+  let lang = 'zh';
+
+  // elements to translate: text nodes that exactly match a key
+  function translateNode(map){
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+    const targets = [];
+    let node;
+    while((node = walker.nextNode())){
+      const txt = node.textContent.trim();
+      if(map[txt]) targets.push({node, val: map[txt]});
+    }
+    targets.forEach(({node, val}) => { node.textContent = node.textContent.replace(node.textContent.trim(), val); });
+    // also handle placeholder subtitles
+    document.querySelectorAll('.item-sub, .kpi-sub, .section-label, .section-title, .chart-title, .item-label, .kpi-label, .insight-card h4').forEach(el=>{
+      const txt = el.textContent.trim();
+      if(map[txt]) el.textContent = map[txt];
+    });
+  }
+
+  const btn = document.getElementById('langToggleBtn');
+  btn.addEventListener('click', function(){
+    lang = lang==='zh'?'en':'zh';
+    btn.textContent = lang==='zh'?'EN':'中文';
+    document.documentElement.lang = lang==='zh'?'zh-CN':'en';
+    translateNode(lang==='en'?ZH_EN:EN_ZH);
+  });
+})();
+</script>
+
+</body>
+</html>
