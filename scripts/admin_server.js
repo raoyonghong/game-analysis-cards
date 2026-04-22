@@ -166,9 +166,15 @@ async function handleAdd(body) {
     try { indexPayload = refreshIndex(); }
     catch (e) { throw Object.assign(e, { step: 'refresh-index' }); }
 
-    // 10. Git add/commit/push
+    // 10. Git add/commit/push — only files we touched, so we don't silently commit unrelated work-tree changes.
     try {
-      git('add', '-A');
+      const targets = [
+        `竞品分析_${slug}.html`,
+        'game-meta.json',
+        'cards-index.json',
+        'site.js',
+      ];
+      git('add', '--', ...targets);
       git('commit', '-m', `add: ${name}`);
       git('push', 'origin', 'master');
     } catch (e) {
@@ -212,7 +218,13 @@ function handleDelete(body) {
   catch (e) { throw Object.assign(e, { step: 'refresh-index' }); }
 
   try {
-    git('add', '-A');
+    const targets = [
+      `${slugRaw}.html`,
+      'game-meta.json',
+      'cards-index.json',
+      'site.js',
+    ];
+    git('add', '--', ...targets);
     git('commit', '-m', `remove: ${slugRaw}`);
     git('push', 'origin', 'master');
   } catch (e) {
