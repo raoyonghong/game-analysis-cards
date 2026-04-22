@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const TEMP = path.join(__dirname, '.data');
+const DATA_DIR = path.join(__dirname, '.data');
 const META = path.join(__dirname, '..', 'game-meta.json');
 
 const GAMES = [
@@ -27,8 +27,6 @@ const SUBGENRE_MAP = {
   'Idle': '放置',
 };
 
-const meta = JSON.parse(fs.readFileSync(META, 'utf8'));
-
 function humanNumber(n) {
   if (n == null) return null;
   return Math.round(n).toLocaleString('en-US');
@@ -37,35 +35,45 @@ function moneyNumber(cents) {
   if (cents == null) return null;
   return '$' + Math.round(cents / 100).toLocaleString('en-US');
 }
-
 function buildMonthly(raw) {
   const iosRows = raw.iosData?.serialized_sales_reports?.[1]?.[0]?.[1];
   const andRows = raw.andData?.serialized_sales_reports?.[1]?.[0]?.[1];
   let totalDL = 0, totalRV = 0;
-  if (iosRows) for (const [, , r, d, iap_r, iap_d] of iosRows) { totalRV += (r||0)+(iap_r||0); totalDL += (d||0)+(iap_d||0); }
-  if (andRows) for (const [, , r, d] of andRows) { totalRV += r||0; totalDL += d||0; }
+  if (iosRows) for (const [, , r, d, iap_r, iap_d] of iosRows) { totalRV += (r || 0) + (iap_r || 0); totalDL += (d || 0) + (iap_d || 0); }
+  if (andRows) for (const [, , r, d] of andRows) { totalRV += r || 0; totalDL += d || 0; }
   return { totalDL, totalRV };
 }
 
-for (const g of GAMES) {
-  const rawPath = path.join(TEMP, `batch_${g.slug}.json`);
+// Update game-meta.json for one slug. Returns the entry written.
+function updateOne(slug, fallbackGenre) {
+  const rawPath = path.join(DATA_DIR, `batch_${slug}.json`);
   const raw = JSON.parse(fs.readFileSync(rawPath, 'utf8'));
   const overview = raw.overview;
   const iconUrl = overview.icon_url || (overview.sub_apps?.[0]?.icon_url) || null;
   const stGenre = overview.sub_genre?.value;
-  const genre = SUBGENRE_MAP[stGenre] || g.genreZh || '竞品分析卡片';
-
+  const genre = SUBGENRE_MAP[stGenre] || fallbackGenre || '竞品分析卡片';
   const { totalDL, totalRV } = buildMonthly(raw);
-
-  const key = '竞品分析_' + g.slug;
-  meta[key] = {
+  const entry = {
     iconUrl,
     genre,
     totalDownloads: humanNumber(totalDL),
     totalRevenue: moneyNumber(totalRV),
   };
-  console.log(key, '→ genre=', genre, '| dl=', meta[key].totalDownloads, '| rv=', meta[key].totalRevenue);
+  const meta = JSON.parse(fs.readFileSync(META, 'utf8'));
+  const key = '竞品分析_' + slug;
+  meta[key] = entry;
+  fs.writeFileSync(META, JSON.stringify(meta, null, 2), 'utf8');
+  return { key, entry };
 }
 
-fs.writeFileSync(META, JSON.stringify(meta, null, 2), 'utf8');
-console.log('\ngame-meta.json updated');
+function runCli() {
+  for (const g of GAMES) {
+    const { key, entry } = updateOne(g.slug, g.genreZh);
+    console.log(key, '→ genre=', entry.genre, '| dl=', entry.totalDownloads, '| rv=', entry.totalRevenue);
+  }
+  console.log('\ngame-meta.json updated');
+}
+
+module.exports = { updateOne, SUBGENRE_MAP };
+
+if (require.main === module) runCli();

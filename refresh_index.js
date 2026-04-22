@@ -95,7 +95,10 @@ function main() {
   fs.writeFileSync(SITE_JS, newJs, 'utf8');
 
   console.log(`ok: ${cards.length} cards indexed → site.js updated`);
+  return payload;
 }
 
-main();
+module.exports = { main };
+
+if (require.main === module) main();
 

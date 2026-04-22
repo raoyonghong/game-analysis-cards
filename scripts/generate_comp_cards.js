@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const TEMP = path.join(__dirname, '.data');
+const DATA_DIR = path.join(__dirname, '.data');
 const OUT = path.join(__dirname, '..');
 
 const GAMES = [
@@ -440,17 +440,29 @@ new Chart(document.getElementById('rvChart'), {
 </html>`;
 }
 
-// Run
-for (const g of GAMES) {
-  const rawPath = path.join(TEMP, `batch_${g.slug}.json`);
-  if (!fs.existsSync(rawPath)) { console.log('MISSING raw:', g.slug); continue; }
+// Generate a single card. Returns { outPath, fileName }.
+function generateOne(game) {
+  const rawPath = path.join(DATA_DIR, `batch_${game.slug}.json`);
+  if (!fs.existsSync(rawPath)) throw new Error('MISSING raw data: ' + rawPath);
   const raw = JSON.parse(fs.readFileSync(rawPath, 'utf8'));
-  try {
-    const html = generateCard(g, raw);
-    const out = path.join(OUT, `竞品分析_${g.slug}.html`);
-    fs.writeFileSync(out, html, 'utf8');
-    console.log('OK →', out);
-  } catch (e) {
-    console.log('ERR', g.slug, '→', e.message);
+  const html = generateCard(game, raw);
+  const fileName = `竞品分析_${game.slug}.html`;
+  const outPath = path.join(OUT, fileName);
+  fs.writeFileSync(outPath, html, 'utf8');
+  return { outPath, fileName };
+}
+
+function runCli() {
+  for (const g of GAMES) {
+    try {
+      const { outPath } = generateOne(g);
+      console.log('OK →', outPath);
+    } catch (e) {
+      console.log('ERR', g.slug, '→', e.message);
+    }
   }
 }
+
+module.exports = { generateOne, generateCard };
+
+if (require.main === module) runCli();

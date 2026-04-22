@@ -94,30 +94,32 @@ const LANG_BUTTON_HTML = `
 
 let patched = 0;
 
-fs.readdirSync(ROOT)
-  .filter(f => /^竞品分析_.*\.html$/i.test(f))
-  .forEach(fileName => {
-    const fp = path.join(ROOT, fileName);
-    let html = fs.readFileSync(fp, 'utf8');
+// Patch one card HTML file. Returns true if patched, false if already patched.
+function patchOneLang(fileName) {
+  const fp = path.join(ROOT, fileName);
+  let html = fs.readFileSync(fp, 'utf8');
+  if (html.includes('card-i18n')) return false;
+  html = html.replace('</style>', LANG_BUTTON_CSS + '\n</style>');
+  html = html.replace('<body>', '<body>' + LANG_BUTTON_HTML);
+  html = html.replace('</body>', LANG_SCRIPT + '\n</body>');
+  fs.writeFileSync(fp, html, 'utf8');
+  return true;
+}
 
-    // skip if already patched
-    if (html.includes('card-i18n')) {
-      console.log('already patched:', fileName);
-      return;
-    }
+function runCli() {
+  fs.readdirSync(ROOT)
+    .filter(f => /^竞品分析_.*\.html$/i.test(f))
+    .forEach(fileName => {
+      if (patchOneLang(fileName)) {
+        patched++;
+        console.log('patched:', fileName);
+      } else {
+        console.log('already patched:', fileName);
+      }
+    });
+  console.log(`\ndone — ${patched} files patched`);
+}
 
-    // inject CSS before </style>
-    html = html.replace('</style>', LANG_BUTTON_CSS + '\n</style>');
+module.exports = { patchOneLang };
 
-    // inject button after <body> (or after <div class="card">)
-    html = html.replace('<body>', '<body>' + LANG_BUTTON_HTML);
-
-    // inject script before </body>
-    html = html.replace('</body>', LANG_SCRIPT + '\n</body>');
-
-    fs.writeFileSync(fp, html, 'utf8');
-    patched++;
-    console.log('patched:', fileName);
-  });
-
-console.log(`\ndone — ${patched} files patched`);
+if (require.main === module) runCli();
