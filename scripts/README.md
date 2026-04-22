@@ -50,51 +50,6 @@ git add . && git commit -m "新增 xxx 卡片" && git push origin master
 | `generate_comp_cards.js` | 从 `.data/batch_*.json` 生成竞品分析 HTML 卡片 |
 | `update_meta.js` | 提取图标/子类/总量更新 `../game-meta.json` |
 | `patch_card_icon.js` | 把卡片 header 的文字 badge 替换为真图标 |
-| `admin_server.js` | 本地管理服务（增删卡片） — 见下方 "Admin 本地管理服务" |
-| `site-admin.js` | 管理员 UI 浮层（+按钮 + × 删除按钮） |
-| `.data/` | 采集的原始 JSON（git 忽略） |
-
-## Admin 本地管理服务（新增/删除卡片）
-
-首页 `index.html` 支持管理员在本机增删卡片并即时推到 GitHub（Netlify 自动部署）。
-
-**架构**：`scripts/admin_server.js`（本地 127.0.0.1:9876）+ `scripts/site-admin.js`（浏览器内 UI 浮层）。公网用户 ping 不通本地服务器，看不到任何管理按钮；只在本机开着服务器时，FAB + 删除按钮才会显现。
-
-### 启动
-
-```bash
-# 1. 保证 Edge 带调试端口启动、ST 已登录（同"前置条件"）
-# 2. 启动管理服务器
-cd scripts
-node admin_server.js
-# → admin server listening on http://127.0.0.1:9876
-```
-
-### 使用
-
-- 打开 `index.html`（file:// 或 Netlify 线上都行） → 右下角出现紫色 `+` FAB
-- **新增**：点 `+` → 输入密码 `180722` → 输入游戏名 → 输入数据来源链接（可留空） → 服务器自动跑全流程（搜索 uid → 采集 → 生成 HTML → 补语言/图标 → 更新 meta → 刷新索引 → `git add/commit/push`） → 页面自动刷新显示新卡片
-- **删除**：鼠标悬浮任意卡片 → 右上角出现红色 `×` → 点击 → 密码 → 二次确认 → 删文件、删 meta 条目、刷新索引、git push → 页面自动刷新
-- 密码在 sessionStorage 里缓存，同一会话内不重复问
-
-### 安全边界
-
-- 服务器只绑 `127.0.0.1`，不对 LAN 开放
-- 密码 `180722` 硬编码在 `site-admin.js` 和 `admin_server.js`（用户明确要求）— 只防误操作，不防恶意
-- 删除接口强校验 slug 格式：`/^竞品分析_[A-Za-z0-9_]+$/`
-- 所有 git 命令用 `execFileSync` 数组参数，不拼字符串
-- 任何流程出错不触发 commit，前端显示 `step` 字段帮定位
-
-### 端点
-
-| Method | Path | 说明 |
-|--------|------|------|
-| POST | `/api/ping` | 无需密码，返回 `{ok:true}`，用于前端探活 |
-| POST | `/api/add` | `{password, name, url}` → 编排新增 + git push |
-| POST | `/api/delete` | `{password, slug}` → 删除 + git push（slug 形如 `竞品分析_Foo`） |
-
----
-
 | `.data/` | 采集的原始 JSON（git 忽略） |
 
 ## ST API 要点（2026-04 实测）

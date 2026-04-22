@@ -132,7 +132,6 @@ body {
   flex-direction: column;
   gap: 14px;
   min-height: 220px;
-  position: relative;
 }
 .card-top {
   display: flex;
@@ -312,50 +311,3 @@ body {
   .hero-meta, .toolbar-actions { min-width: 0; width: 100%; }
   .toolbar-actions { flex-direction: column; }
 }
-
-/* ── admin (only visible when local admin_server is reachable) ── */
-.admin-fab {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  border: 0;
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1;
-  cursor: pointer;
-  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.45);
-  z-index: 999;
-  transition: transform 0.15s, box-shadow 0.15s;
-}
-.admin-fab:hover { transform: scale(1.06); box-shadow: 0 12px 28px rgba(79, 70, 229, 0.55); }
-.admin-fab:disabled { opacity: 0.6; cursor: progress; transform: none; }
-.admin-delete-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: rgba(239, 68, 68, 0.92);
-  color: #fff;
-  border: 0;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1;
-  opacity: 0;
-  transition: opacity 0.15s, background 0.15s;
-  z-index: 5;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.library-card:hover .admin-delete-btn { opacity: 1; }
-.admin-delete-btn:hover { background: #dc2626; }
-.admin-delete-btn:focus { outline: 2px solid #fff; outline-offset: 2px; opacity: 1; }
