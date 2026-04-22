@@ -20,11 +20,24 @@ const SUBGENRE_MAP = {
   'Third-Person Shooter': '第三人称射击',
   'First-Person Shooter': 'FPS',
   'Arcade': '休闲街机',
+  'Arcade Driving': '街机驾驶',
   'Other Arcade': '其他街机',
   'Sniper': '狙击手',
   'Puzzle Match': '交换消除',
   'Merge': '三合',
   'Idle': '放置',
+  'Idle RPG': '放置RPG',
+  'Idle Tycoon': '放置经营',
+  'Fighting': '格斗',
+  '1v1 Fighting': '1v1格斗',
+  'Sports': '街机体育',
+  'Soccer': '街机体育',
+  'Sports Manager': '体育经理人',
+  'Flight': '飞行',
+  'Plane Shooter': '车辆射击',
+  'MMORPG': 'MMORPG',
+  'Shooter RPG': 'FPS / 3PS',
+  'Action Adventure': '动作冒险',
 };
 
 function humanNumber(n) {
@@ -51,7 +64,8 @@ function updateOne(slug, fallbackGenre) {
   const overview = raw.overview;
   const iconUrl = overview.icon_url || (overview.sub_apps?.[0]?.icon_url) || null;
   const stGenre = overview.sub_genre?.value;
-  const genre = SUBGENRE_MAP[stGenre] || fallbackGenre || '竞品分析卡片';
+  // Prefer mapped Chinese name → caller-supplied fallback → ST English sub_genre → generic
+  const genre = SUBGENRE_MAP[stGenre] || fallbackGenre || stGenre || '竞品分析卡片';
   const { totalDL, totalRV } = buildMonthly(raw);
   const entry = {
     iconUrl,

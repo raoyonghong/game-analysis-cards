@@ -85,11 +85,12 @@ function deriveTags(overview) {
   const zh = SUBGENRE_MAP[stGenre];
   const tags = [];
   if (zh) tags.push(zh);
+  else if (stGenre) tags.push(stGenre);
   const monetization = overview?.monetization || [];
   if (monetization.some(m => /Free to Play/i.test(m.name))) tags.push('免费游戏');
   if (monetization.some(m => /Subscription/i.test(m.name))) tags.push('订阅');
   if (monetization.some(m => /In-App Purchases/i.test(m.name))) tags.push('内购');
-  while (tags.length < 2) tags.push('竞品分析卡片');
+  if (!tags.length) tags.push('竞品分析卡片');
   return [...new Set(tags)].slice(0, 5);
 }
 function deriveSubtitleExtra(overview) {

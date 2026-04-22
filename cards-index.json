@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-22T07:49:27.478Z",
-  "total": 21,
+  "generatedAt": "2026-04-22T07:50:42.127Z",
+  "total": 20,
   "cards": [
     {
       "title": "Battle Cars: Nitro PvP Shooter",
@@ -78,22 +78,6 @@
       "iconUrl": "https://play-lh.googleusercontent.com/lTV8ClfOPTcWnZA5xwTJq4v9PAzc-wwr08IbB9CGFw9ozmfUvX0MRnK5LFRz4ad-Ig",
       "totalDownloads": "257,580,501",
       "totalRevenue": "$65,822,497"
-    },
-    {
-      "title": "Hill Climb Racing",
-      "fileName": "竞品分析_HillClimbRacing.html",
-      "relativePath": "./竞品分析_HillClimbRacing.html",
-      "updatedAt": "2026-04-22T07:49:27.461Z",
-      "updatedAtText": "2026-04-22 07:49:27",
-      "sourceType": "免费游戏",
-      "tags": [
-        "竞品分析卡片",
-        "竞技"
-      ],
-      "slug": "竞品分析_HillClimbRacing",
-      "iconUrl": "https://assets.sensortower-china.com/N0UxhBVUmx8s7y3F7Kqre2AcpXyPDKAp8nHjiPPoOONc_sfugHCYMjBpbUKCMlK_XUs=s150",
-      "totalDownloads": "982,317,761",
-      "totalRevenue": "$13,419,788"
     },
     {
       "title": "Hill Climb Racing 2",
