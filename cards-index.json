@@ -1,7 +1,22 @@
 {
-  "generatedAt": "2026-04-13T05:53:49.963Z",
-  "total": 15,
+  "generatedAt": "2026-04-22T06:53:52.096Z",
+  "total": 20,
   "cards": [
+    {
+      "title": "Battle Cars: Nitro PvP Shooter",
+      "fileName": "竞品分析_BattleCars.html",
+      "relativePath": "./竞品分析_BattleCars.html",
+      "updatedAt": "2026-04-22T06:53:45.550Z",
+      "updatedAtText": "2026-04-22 06:53:45",
+      "sourceType": "车辆射击",
+      "tags": [
+        "竞品分析卡片"
+      ],
+      "slug": "竞品分析_BattleCars",
+      "iconUrl": "https://assets.sensortower-china.com/wgmezSyFjj7V6XJdwZrEaa9qIAJrGRW-PBSMOPobGOd5KiSpDbjN-kiKfhmnCjdIvpO8=s150",
+      "totalDownloads": "9,281,812",
+      "totalRevenue": "$1,050,671"
+    },
     {
       "title": "Dream Mania - Match 3 Games",
       "fileName": "竞品分析_DreamMania.html",
@@ -81,6 +96,22 @@
       "totalRevenue": "$97,113,212"
     },
     {
+      "title": "Massive Warfare: Tanks PvP War",
+      "fileName": "竞品分析_MassiveWarfare.html",
+      "relativePath": "./竞品分析_MassiveWarfare.html",
+      "updatedAt": "2026-04-22T06:53:45.555Z",
+      "updatedAtText": "2026-04-22 06:53:45",
+      "sourceType": "车辆射击",
+      "tags": [
+        "竞品分析卡片",
+        "射击/战争"
+      ],
+      "slug": "竞品分析_MassiveWarfare",
+      "iconUrl": "https://assets.sensortower-china.com/p0HtacWW-imz5ew6yX0RPyu0B5R0S6kSVGEo04okjQTnTECAr2JZCv9wGmMJ9lrREg=s150",
+      "totalDownloads": "92,577,950",
+      "totalRevenue": "$33,134,268"
+    },
+    {
       "title": "Paradise Paws: Merge Animals",
       "fileName": "竞品分析_ParadisePaws.html",
       "relativePath": "./竞品分析_ParadisePaws.html",
@@ -95,6 +126,36 @@
       "iconUrl": "https://play-lh.googleusercontent.com/p6TVyOqXxALe70soJ8WJSONP2TaCXfcXP68UwXgs6jtRhJjB7-QZrmhbedcFz_CuYg",
       "totalDownloads": "1,574,567",
       "totalRevenue": "$6,337,810"
+    },
+    {
+      "title": "Polygun Arena: Online Shooter",
+      "fileName": "竞品分析_PolygunArena.html",
+      "relativePath": "./竞品分析_PolygunArena.html",
+      "updatedAt": "2026-04-22T06:53:45.556Z",
+      "updatedAtText": "2026-04-22 06:53:45",
+      "sourceType": "第三人称射击",
+      "tags": [
+        "竞品分析卡片"
+      ],
+      "slug": "竞品分析_PolygunArena",
+      "iconUrl": "https://assets.sensortower-china.com/_KedaMQ4Pwjg9DpINQAKzq-pf793KJ5CZSsXJwOL01XdXOp5QzS36CYlmjT3I9TaxhE=s150",
+      "totalDownloads": "18,451,523",
+      "totalRevenue": "$5,482,554"
+    },
+    {
+      "title": "Punch TV",
+      "fileName": "竞品分析_PunchTV.html",
+      "relativePath": "./竞品分析_PunchTV.html",
+      "updatedAt": "2026-04-22T06:53:45.556Z",
+      "updatedAtText": "2026-04-22 06:53:45",
+      "sourceType": "休闲街机",
+      "tags": [
+        "竞品分析卡片"
+      ],
+      "slug": "竞品分析_PunchTV",
+      "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/10/24/f6/1024f69a-c1ec-8fa9-8545-7430286f7564/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/150x150bb.jpg",
+      "totalDownloads": "92,464",
+      "totalRevenue": "$19,550"
     },
     {
       "title": "Skullgirls: Fighting RPG",
@@ -158,6 +219,21 @@
       "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/e7/17/45/e717455e-b2e2-2f8c-a555-5e9cf9c4832f/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/150x150bb.jpg",
       "totalDownloads": "526,501,855",
       "totalRevenue": "$20,325,518"
+    },
+    {
+      "title": "Tomb of the Mask: Old Maze",
+      "fileName": "竞品分析_TombOfTheMaskOldMaze.html",
+      "relativePath": "./竞品分析_TombOfTheMaskOldMaze.html",
+      "updatedAt": "2026-04-22T06:53:45.559Z",
+      "updatedAtText": "2026-04-22 06:53:45",
+      "sourceType": "平台跑酷",
+      "tags": [
+        "竞品分析卡片"
+      ],
+      "slug": "竞品分析_TombOfTheMaskOldMaze",
+      "iconUrl": "https://assets.sensortower-china.com/ATGr-U4JBK2VjFzKGK9eMMkrDxJaazadOUoz_7Yl0U5NrWSFcFUzEtNurWXYzVWc8uOO=s150",
+      "totalDownloads": "527,703,097",
+      "totalRevenue": "$20,363,274"
     },
     {
       "title": "War Drone: 3D Shooting Games",

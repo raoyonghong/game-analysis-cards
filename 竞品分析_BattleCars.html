@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>竞品分析 - Battle Cars: Nitro PvP Shooter</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f2f5; padding: 24px; color: #1a1a2e; }
+.card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 920px; margin: 0 auto; overflow: hidden; }
+.card-header { background: linear-gradient(135deg, #1a1a2e 0%, #1e1b4b 100%); padding: 28px 32px; display: flex; align-items: center; gap: 18px; }
+.app-badge { width: 72px; height: 72px; border-radius: 16px; background: #7c3aed; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; flex-shrink: 0; }
+.app-info h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.subtitle { font-size: 13px; color: rgba(255,255,255,0.78); }
+.tags { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+.tag { background: rgba(255,255,255,0.12); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 999px; }
+.section-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 16px 32px 8px; border-top: 1px solid #f0f2f5; }
+.overview-row, .kpi-row { display: grid; }
+.overview-row { grid-template-columns: repeat(3, 1fr); }
+.kpi-row { grid-template-columns: repeat(4, 1fr); border-top: 1px solid #f0f2f5; }
+.item, .kpi-item { padding: 18px 20px; text-align: center; border-right: 1px solid #f0f2f5; }
+.item:last-child, .kpi-item:last-child { border-right: none; }
+.item-label, .kpi-label { font-size: 11px; color: #64748b; margin-bottom: 6px; }
+.item-value { font-size: 24px; font-weight: 700; color: #7c3aed; }
+.kpi-value { font-size: 26px; font-weight: 700; color: #1f2937; }
+.item-sub, .kpi-sub { font-size: 10px; color: #94a3b8; margin-top: 4px; }
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #f0f2f5; }
+.chart-box { padding: 20px 24px; border-right: 1px solid #f0f2f5; }
+.chart-box:last-child { border-right: none; }
+.chart-title { font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 12px; }
+.chart-wrap { position: relative; height: 180px; }
+.section { padding: 0 32px 24px; }
+.section-title { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 16px 0 12px; border-top: 1px solid #f0f2f5; }
+.country-table { width: 100%; border-collapse: collapse; }
+.country-table th { font-size: 11px; color: #64748b; font-weight: 600; text-align: left; padding: 8px 10px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; }
+.country-table th.r { text-align: right; }
+.country-table td { padding: 10px; font-size: 13px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
+.country-table tr:last-child td { border-bottom: none; }
+.rank-badge { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; background: #7c3aed; color: #fff; }
+.num { text-align: right; color: #475569; }
+.bar-wrap { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.bar-bg { width: 74px; height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+.bar { height: 100%; border-radius: 999px; }
+.bar-dl { background: linear-gradient(90deg, #3b82f6, #93c5fd); }
+.bar-rv { background: linear-gradient(90deg, #16a34a, #86efac); }
+.pct { min-width: 44px; text-align: right; font-size: 12px; font-weight: 700; color: #334155; }
+.insights { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 32px 28px; }
+.insight-card { background: #f5f3ff; border-left: 4px solid #7c3aed; border-radius: 10px; padding: 16px 18px; }
+.insight-card h4 { font-size: 12px; color: #334155; margin-bottom: 8px; }
+.insight-card p { font-size: 12px; line-height: 1.7; color: #334155; }
+.card-footer { background: #f8fafc; padding: 12px 32px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; gap: 12px; flex-wrap: wrap; }
+.footer-text { font-size: 11px; color: #94a3b8; }
+@media (max-width: 800px) {
+  .overview-row, .kpi-row, .charts-row, .insights { grid-template-columns: 1fr; }
+  .item, .kpi-item, .chart-box { border-right: none; border-bottom: 1px solid #f0f2f5; }
+  .chart-box:last-child, .kpi-item:last-child, .item:last-child { border-bottom: none; }
+}
+
+/* ── lang toggle ── */
+.lang-toggle-wrap { position: fixed; top: 16px; right: 16px; z-index: 999; }
+.lang-toggle-btn { background: rgba(30,30,60,0.82); color: #fff; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; backdrop-filter: blur(6px); }
+.lang-toggle-btn:hover { background: rgba(30,30,60,0.95); }
+
+
+/* ── lang toggle ── */
+.lang-toggle-wrap { position: fixed; top: 16px; right: 16px; z-index: 999; }
+.lang-toggle-btn { background: rgba(30,30,60,0.82); color: #fff; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; backdrop-filter: blur(6px); }
+.lang-toggle-btn:hover { background: rgba(30,30,60,0.95); }
+
+</style>
+</head>
+<body>
+<div class="lang-toggle-wrap">
+  <button id="langToggleBtn" class="lang-toggle-btn">EN</button>
+</div>
+
+<div class="lang-toggle-wrap">
+  <button id="langToggleBtn" class="lang-toggle-btn">EN</button>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="app-badge">BC</div>
+    <div class="app-info">
+      <h1>Battle Cars: Nitro PvP Shooter</h1>
+      <div class="subtitle">Tiny Bytes · iOS + Android · 巴西发行</div>
+      <div class="tags"><span class="tag">车辆射击</span><span class="tag">3D 写实</span><span class="tag">多人PvP</span><span class="tag">载具收集</span><span class="tag">街机对战</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">维度一 · 基础概览</div>
+  <div class="overview-row">
+    <div class="item">
+      <div class="item-label">全球上线时间</div>
+      <div class="item-value">2024/04/10</div>
+      <div class="item-sub">数据来源：Sensor Tower</div>
+    </div>
+    <div class="item">
+      <div class="item-label">上线至今总下载</div>
+      <div class="item-value">9.3M</div>
+      <div class="item-sub">全球 · 所有时间</div>
+    </div>
+    <div class="item">
+      <div class="item-label">上线至今总收入</div>
+      <div class="item-value">$1.1M</div>
+      <div class="item-sub">全球 · 所有时间</div>
+    </div>
+  </div>
+
+  <div class="section-label">维度二 · 近30天核心指标</div>
+  <div class="kpi-row">
+    <div class="kpi-item">
+      <div class="kpi-label">下载量</div>
+      <div class="kpi-value">341K</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">收入</div>
+      <div class="kpi-value">$82K</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">RPD</div>
+      <div class="kpi-value">$0.11</div>
+      <div class="kpi-sub">全球 · 所有时间</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">平均DAU</div>
+      <div class="kpi-value">344K</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+  </div>
+
+  <div class="section-label">维度三 · 上线至今月度趋势</div>
+  <div class="charts-row">
+    <div class="chart-box">
+      <div class="chart-title">月度下载量趋势</div>
+      <div class="chart-wrap"><canvas id="dlChart"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">月度收入趋势</div>
+      <div class="chart-wrap"><canvas id="rvChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">维度四 · 上线至今 Top 5 国家表现</div>
+    <table class="country-table">
+      <thead>
+        <tr>
+          <th style="width: 32px;">#</th>
+          <th>国家</th>
+          <th class="r">下载量</th>
+          <th class="r" style="width: 150px;">下载占比</th>
+          <th class="r">净收入</th>
+          <th class="r" style="width: 150px;">净收入占比</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="rank-badge">1</span></td>
+        <td>印度</td>
+        <td class="num">1,376,664</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:100.0%"></div></div><span class="pct">14.8%</span></div>
+        </td>
+        <td class="num">$381</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:8.0%"></div></div><span class="pct">0.0%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">2</span></td>
+        <td>印尼</td>
+        <td class="num">661,985</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:48.1%"></div></div><span class="pct">7.1%</span></div>
+        </td>
+        <td class="num">$15,156</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:47.9%"></div></div><span class="pct">1.4%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">3</span></td>
+        <td>巴西</td>
+        <td class="num">583,430</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:42.4%"></div></div><span class="pct">6.3%</span></div>
+        </td>
+        <td class="num">$11,234</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:35.5%"></div></div><span class="pct">1.1%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">4</span></td>
+        <td>土耳其</td>
+        <td class="num">564,414</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:41.0%"></div></div><span class="pct">6.1%</span></div>
+        </td>
+        <td class="num">$31,624</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:100.0%"></div></div><span class="pct">3.0%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">5</span></td>
+        <td>墨西哥</td>
+        <td class="num">445,882</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:32.4%"></div></div><span class="pct">4.8%</span></div>
+        </td>
+        <td class="num">$11,389</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:36.0%"></div></div><span class="pct">1.1%</span></div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">数据分析洞察</div>
+  <div class="insights">
+      <div class="insight-card">
+        <h4>市场集中度</h4>
+        <p>印度贡献14.8%下载、0.0%收入。 前5国家累计贡献39.1%下载，分布相对均衡。</p>
+      </div>
+      <div class="insight-card">
+        <h4>变现效率</h4>
+        <p>上线至今RPD约为$0.11。 近30天RPD约为$0.24。 近30天平均DAU为344K。</p>
+      </div>
+      <div class="insight-card">
+        <h4>区域结构</h4>
+        <p>前5国家累计贡献 39.1% 的下载。 印度、印尼、巴西、土耳其、墨西哥为相对低变现市场。</p>
+      </div>
+      <div class="insight-card">
+        <h4>趋势判断</h4>
+        <p>下载峰值出现在2025/3（1.2M），收入峰值出现在2026/2（$90K）。 当前下载已明显低于历史高点，增长热度趋缓。</p>
+      </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-text">数据周期：2024/4 - 2026/4 · 全球</span>
+    <span class="footer-text">数据来源：Sensor Tower · 生成时间：2026/04/22</span>
+  </div>
+</div>
+
+<script>
+const labels = ["2024/4","2024/5","2024/6","2024/7","2024/8","2024/9","2024/10","2024/11","2024/12","2025/1","2025/2","2025/3","2025/4","2025/5","2025/6","2025/7","2025/8","2025/9","2025/10","2025/11","2025/12","2026/1","2026/2","2026/3","2026/4"];
+const dlData = [751,1,0,2651,8465,17107,12224,7763,547,390469,1102375,1192806,782775,894759,475315,483926,599422,662903,539051,430226,400412,367077,288972,359814,262001];
+const rvData = [148.87,210.68,0,5141.46,6073.48,7080.69,10940.28,7299.28,6779.18,19869.39,39829.04,41936.77,41841.01,45630.64,37084.3,51542.77,74097.54,80391,86531.8,84375.54,86893.63,79253.08,90376.57,86093.22,61251.22];
+const commonOpts = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { display: false }, ticks: { color: '#94a3b8', maxRotation: 45, autoSkip: true, maxTicksLimit: 12 } },
+    y: { grid: { color: '#f1f5f9' }, ticks: { color: '#94a3b8' } }
+  }
+};
+new Chart(document.getElementById('dlChart'), {
+  type: 'line',
+  data: { labels, datasets: [{ data: dlData, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.35, pointRadius: 2, borderWidth: 2 }] },
+  options: {
+    ...commonOpts,
+    plugins: { ...commonOpts.plugins, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' 次' } } },
+    scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, ticks: { ...commonOpts.scales.y.ticks, callback: v => v >= 1000000 ? (v/1000000).toFixed(1) + 'M' : v >= 1000 ? (v/1000).toFixed(0) + 'K' : v } } }
+  }
+});
+new Chart(document.getElementById('rvChart'), {
+  type: 'line',
+  data: { labels, datasets: [{ data: rvData, borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.08)', fill: true, tension: 0.35, pointRadius: 2, borderWidth: 2 }] },
+  options: {
+    ...commonOpts,
+    plugins: { ...commonOpts.plugins, tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.y.toLocaleString() } } },
+    scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, ticks: { ...commonOpts.scales.y.ticks, callback: v => '$' + (v >= 1000000 ? (v/1000000).toFixed(1) + 'M' : v >= 1000 ? (v/1000).toFixed(0) + 'K' : v) } } }
+  }
+});
+</script>
+
+
+<script id="card-i18n">
+(function(){
+  const ZH_EN = {
+  "维度一 · 基础概览": "Overview",
+  "维度二 · 近30天核心指标": "KPIs · Last 30 Days",
+  "维度三 · 上线至今月度趋势": "Monthly Trend",
+  "维度四 · 上线至今 Top 5 国家表现": "Top 5 Countries (All-time)",
+  "数据分析洞察": "Insights",
+  "全球上线时间": "Global Launch",
+  "上线至今总下载": "Total Downloads",
+  "上线至今总收入": "Total Revenue",
+  "数据来源：Sensor Tower": "Source: Sensor Tower",
+  "全球 · 所有时间": "Global · All-time",
+  "全球 · 近30天": "Global · 30d",
+  "下载量": "Downloads",
+  "收入": "Revenue",
+  "平均DAU": "Avg DAU",
+  "月度下载量趋势": "Monthly Downloads",
+  "月度收入趋势": "Monthly Revenue",
+  "国家": "Country",
+  "下载占比": "DL Share",
+  "净收入": "Net Revenue",
+  "净收入占比": "Rev Share",
+  "市场集中度": "Market Concentration",
+  "变现效率": "Monetization",
+  "区域结构": "Regional Mix",
+  "趋势判断": "Trend"
+};
+  // reverse map
+  const EN_ZH = {};
+  for(const [k,v] of Object.entries(ZH_EN)) EN_ZH[v]=k;
+
+  let lang = 'zh';
+
+  // elements to translate: text nodes that exactly match a key
+  function translateNode(map){
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+    const targets = [];
+    let node;
+    while((node = walker.nextNode())){
+      const txt = node.textContent.trim();
+      if(map[txt]) targets.push({node, val: map[txt]});
+    }
+    targets.forEach(({node, val}) => { node.textContent = node.textContent.replace(node.textContent.trim(), val); });
+    // also handle placeholder subtitles
+    document.querySelectorAll('.item-sub, .kpi-sub, .section-label, .section-title, .chart-title, .item-label, .kpi-label, .insight-card h4').forEach(el=>{
+      const txt = el.textContent.trim();
+      if(map[txt]) el.textContent = map[txt];
+    });
+  }
+
+  const btn = document.getElementById('langToggleBtn');
+  btn.addEventListener('click', function(){
+    lang = lang==='zh'?'en':'zh';
+    btn.textContent = lang==='zh'?'EN':'中文';
+    document.documentElement.lang = lang==='zh'?'zh-CN':'en';
+    translateNode(lang==='en'?ZH_EN:EN_ZH);
+  });
+})();
+</script>
+
+</body>
+</html>

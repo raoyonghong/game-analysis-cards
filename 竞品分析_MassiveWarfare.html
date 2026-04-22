@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>竞品分析 - Massive Warfare: Tanks PvP War</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f2f5; padding: 24px; color: #1a1a2e; }
+.card { background: #fff; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 920px; margin: 0 auto; overflow: hidden; }
+.card-header { background: linear-gradient(135deg, #1a1a2e 0%, #3f2506 100%); padding: 28px 32px; display: flex; align-items: center; gap: 18px; }
+.app-badge { width: 72px; height: 72px; border-radius: 16px; background: #f59e0b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; flex-shrink: 0; }
+.app-info h1 { font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.subtitle { font-size: 13px; color: rgba(255,255,255,0.78); }
+.tags { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+.tag { background: rgba(255,255,255,0.12); color: #fff; font-size: 11px; padding: 4px 10px; border-radius: 999px; }
+.section-label { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 16px 32px 8px; border-top: 1px solid #f0f2f5; }
+.overview-row, .kpi-row { display: grid; }
+.overview-row { grid-template-columns: repeat(3, 1fr); }
+.kpi-row { grid-template-columns: repeat(4, 1fr); border-top: 1px solid #f0f2f5; }
+.item, .kpi-item { padding: 18px 20px; text-align: center; border-right: 1px solid #f0f2f5; }
+.item:last-child, .kpi-item:last-child { border-right: none; }
+.item-label, .kpi-label { font-size: 11px; color: #64748b; margin-bottom: 6px; }
+.item-value { font-size: 24px; font-weight: 700; color: #f59e0b; }
+.kpi-value { font-size: 26px; font-weight: 700; color: #1f2937; }
+.item-sub, .kpi-sub { font-size: 10px; color: #94a3b8; margin-top: 4px; }
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #f0f2f5; }
+.chart-box { padding: 20px 24px; border-right: 1px solid #f0f2f5; }
+.chart-box:last-child { border-right: none; }
+.chart-title { font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 12px; }
+.chart-wrap { position: relative; height: 180px; }
+.section { padding: 0 32px 24px; }
+.section-title { font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; padding: 16px 0 12px; border-top: 1px solid #f0f2f5; }
+.country-table { width: 100%; border-collapse: collapse; }
+.country-table th { font-size: 11px; color: #64748b; font-weight: 600; text-align: left; padding: 8px 10px; background: #f8fafc; border-bottom: 2px solid #e2e8f0; }
+.country-table th.r { text-align: right; }
+.country-table td { padding: 10px; font-size: 13px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
+.country-table tr:last-child td { border-bottom: none; }
+.rank-badge { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; background: #f59e0b; color: #fff; }
+.num { text-align: right; color: #475569; }
+.bar-wrap { display: flex; align-items: center; gap: 6px; justify-content: flex-end; }
+.bar-bg { width: 74px; height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+.bar { height: 100%; border-radius: 999px; }
+.bar-dl { background: linear-gradient(90deg, #3b82f6, #93c5fd); }
+.bar-rv { background: linear-gradient(90deg, #16a34a, #86efac); }
+.pct { min-width: 44px; text-align: right; font-size: 12px; font-weight: 700; color: #334155; }
+.insights { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 32px 28px; }
+.insight-card { background: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 16px 18px; }
+.insight-card h4 { font-size: 12px; color: #334155; margin-bottom: 8px; }
+.insight-card p { font-size: 12px; line-height: 1.7; color: #334155; }
+.card-footer { background: #f8fafc; padding: 12px 32px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; gap: 12px; flex-wrap: wrap; }
+.footer-text { font-size: 11px; color: #94a3b8; }
+@media (max-width: 800px) {
+  .overview-row, .kpi-row, .charts-row, .insights { grid-template-columns: 1fr; }
+  .item, .kpi-item, .chart-box { border-right: none; border-bottom: 1px solid #f0f2f5; }
+  .chart-box:last-child, .kpi-item:last-child, .item:last-child { border-bottom: none; }
+}
+
+/* ── lang toggle ── */
+.lang-toggle-wrap { position: fixed; top: 16px; right: 16px; z-index: 999; }
+.lang-toggle-btn { background: rgba(30,30,60,0.82); color: #fff; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; backdrop-filter: blur(6px); }
+.lang-toggle-btn:hover { background: rgba(30,30,60,0.95); }
+
+
+/* ── lang toggle ── */
+.lang-toggle-wrap { position: fixed; top: 16px; right: 16px; z-index: 999; }
+.lang-toggle-btn { background: rgba(30,30,60,0.82); color: #fff; border: 1.5px solid rgba(255,255,255,0.3); border-radius: 10px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; backdrop-filter: blur(6px); }
+.lang-toggle-btn:hover { background: rgba(30,30,60,0.95); }
+
+</style>
+</head>
+<body>
+<div class="lang-toggle-wrap">
+  <button id="langToggleBtn" class="lang-toggle-btn">EN</button>
+</div>
+
+<div class="lang-toggle-wrap">
+  <button id="langToggleBtn" class="lang-toggle-btn">EN</button>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <div class="app-badge">MW</div>
+    <div class="app-info">
+      <h1>Massive Warfare: Tanks PvP War</h1>
+      <div class="subtitle">Tiny Bytes · iOS + Android · 巴西发行</div>
+      <div class="tags"><span class="tag">车辆射击</span><span class="tag">3D 写实</span><span class="tag">多人PvP</span><span class="tag">公会</span><span class="tag">载具收集</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">维度一 · 基础概览</div>
+  <div class="overview-row">
+    <div class="item">
+      <div class="item-label">全球上线时间</div>
+      <div class="item-value">2018/10/01</div>
+      <div class="item-sub">数据来源：Sensor Tower</div>
+    </div>
+    <div class="item">
+      <div class="item-label">上线至今总下载</div>
+      <div class="item-value">92.6M</div>
+      <div class="item-sub">全球 · 所有时间</div>
+    </div>
+    <div class="item">
+      <div class="item-label">上线至今总收入</div>
+      <div class="item-value">$33.1M</div>
+      <div class="item-sub">全球 · 所有时间</div>
+    </div>
+  </div>
+
+  <div class="section-label">维度二 · 近30天核心指标</div>
+  <div class="kpi-row">
+    <div class="kpi-item">
+      <div class="kpi-label">下载量</div>
+      <div class="kpi-value">647K</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">收入</div>
+      <div class="kpi-value">$580K</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">RPD</div>
+      <div class="kpi-value">$0.36</div>
+      <div class="kpi-sub">全球 · 所有时间</div>
+    </div>
+    <div class="kpi-item">
+      <div class="kpi-label">平均DAU</div>
+      <div class="kpi-value">189K</div>
+      <div class="kpi-sub">全球 · 近30天</div>
+    </div>
+  </div>
+
+  <div class="section-label">维度三 · 上线至今月度趋势</div>
+  <div class="charts-row">
+    <div class="chart-box">
+      <div class="chart-title">月度下载量趋势</div>
+      <div class="chart-wrap"><canvas id="dlChart"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title">月度收入趋势</div>
+      <div class="chart-wrap"><canvas id="rvChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">维度四 · 上线至今 Top 5 国家表现</div>
+    <table class="country-table">
+      <thead>
+        <tr>
+          <th style="width: 32px;">#</th>
+          <th>国家</th>
+          <th class="r">下载量</th>
+          <th class="r" style="width: 150px;">下载占比</th>
+          <th class="r">净收入</th>
+          <th class="r" style="width: 150px;">净收入占比</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td><span class="rank-badge">1</span></td>
+        <td>印度</td>
+        <td class="num">18,545,042</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:100.0%"></div></div><span class="pct">20.0%</span></div>
+        </td>
+        <td class="num">$122,924</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:34.2%"></div></div><span class="pct">0.4%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">2</span></td>
+        <td>俄罗斯</td>
+        <td class="num">6,336,455</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:34.2%"></div></div><span class="pct">6.8%</span></div>
+        </td>
+        <td class="num">$239,004</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:66.5%"></div></div><span class="pct">0.7%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">3</span></td>
+        <td>巴西</td>
+        <td class="num">5,398,208</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:29.1%"></div></div><span class="pct">5.8%</span></div>
+        </td>
+        <td class="num">$359,639</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:100.0%"></div></div><span class="pct">1.1%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">4</span></td>
+        <td>印尼</td>
+        <td class="num">4,476,828</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:24.1%"></div></div><span class="pct">4.8%</span></div>
+        </td>
+        <td class="num">$148,661</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:41.3%"></div></div><span class="pct">0.4%</span></div>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="rank-badge">5</span></td>
+        <td>墨西哥</td>
+        <td class="num">3,856,746</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-dl" style="width:20.8%"></div></div><span class="pct">4.2%</span></div>
+        </td>
+        <td class="num">$167,118</td>
+        <td>
+          <div class="bar-wrap"><div class="bar-bg"><div class="bar bar-rv" style="width:46.5%"></div></div><span class="pct">0.5%</span></div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-label">数据分析洞察</div>
+  <div class="insights">
+      <div class="insight-card">
+        <h4>市场集中度</h4>
+        <p>印度贡献20.0%下载、0.4%收入。 前5国家累计贡献41.7%下载，分布相对均衡。</p>
+      </div>
+      <div class="insight-card">
+        <h4>变现效率</h4>
+        <p>上线至今RPD约为$0.36。 近30天RPD约为$0.90。 近30天平均DAU为189K。</p>
+      </div>
+      <div class="insight-card">
+        <h4>区域结构</h4>
+        <p>前5国家累计贡献 41.7% 的下载。 印度、俄罗斯、巴西、印尼、墨西哥为相对低变现市场。</p>
+      </div>
+      <div class="insight-card">
+        <h4>趋势判断</h4>
+        <p>下载峰值出现在2024/4（2.9M），收入峰值出现在2025/12（$803K）。 当前下载已明显低于历史高点，增长热度趋缓。</p>
+      </div>
+  </div>
+
+  <div class="card-footer">
+    <span class="footer-text">数据周期：2017/8 - 2026/4 · 全球</span>
+    <span class="footer-text">数据来源：Sensor Tower · 生成时间：2026/04/22</span>
+  </div>
+</div>
+
+<script>
+const labels = ["2017/8","2017/9","2017/10","2017/11","2017/12","2018/1","2018/2","2018/3","2018/4","2018/5","2018/6","2018/7","2018/8","2018/9","2018/10","2018/11","2018/12","2019/1","2019/2","2019/3","2019/4","2019/5","2019/6","2019/7","2019/8","2019/9","2019/10","2019/11","2019/12","2020/1","2020/2","2020/3","2020/4","2020/5","2020/6","2020/7","2020/8","2020/9","2020/10","2020/11","2020/12","2021/1","2021/2","2021/3","2021/4","2021/5","2021/6","2021/7","2021/8","2021/9","2021/10","2021/11","2021/12","2022/1","2022/2","2022/3","2022/4","2022/5","2022/6","2022/7","2022/8","2022/9","2022/10","2022/11","2022/12","2023/1","2023/2","2023/3","2023/4","2023/5","2023/6","2023/7","2023/8","2023/9","2023/10","2023/11","2023/12","2024/1","2024/2","2024/3","2024/4","2024/5","2024/6","2024/7","2024/8","2024/9","2024/10","2024/11","2024/12","2025/1","2025/2","2025/3","2025/4","2025/5","2025/6","2025/7","2025/8","2025/9","2025/10","2025/11","2025/12","2026/1","2026/2","2026/3","2026/4"];
+const dlData = [90,2185,436,666,422,1312,272,1140,1273,3541,502,199,368,46263,1919415,347842,400969,359499,2022566,750810,521523,411899,415314,240884,332576,486097,164507,133873,138534,199196,180190,194897,231665,251568,424720,332503,329673,182762,572500,176363,228891,429244,607183,529616,429071,467730,541983,701975,806853,842808,764789,673628,859230,1365535,952293,886589,795130,582398,452586,519344,389390,335539,400661,414964,547474,582975,990323,1069023,853704,1283835,1265723,1540818,1222274,2642004,1402705,2666508,1754117,1190604,1796482,1403843,2922310,1267905,2008404,1754655,1143573,2780184,1551024,1462506,1862743,1742868,1648550,2510637,2454773,2315327,2323399,1493257,2046437,2247321,1243427,2194108,1416282,1156983,679766,930693,449962];
+const rvData = [0,0,0,0,33.83,30.58,52.1,110.54,51.6,39.49,812.78,576.46,873.39,8094.45,64546.42,65366.71,77145.39,97188.77,139543.09,174236.7,179037.33,181200.32,191484.56,184954.85,177566.16,160470.36,141339.79,140046.91,148342.29,158884.6,143277.94,144837.9,158052.96,152954.82,136355.51,163132.28,153763.49,156008.13,152079.28,158473,189987.58,234983.55,212791.9,237954.52,237947.91,223141.57,188603.54,205591.78,199592.21,213904.47,262045.2,254162.79,296403.12,327853.1,330047.14,367974.49,399459.92,440242.36,483161.85,524253.92,489183.85,450210.1,446958.92,424001.52,496330.61,520871.32,478360.68,508723.78,489091.89,472367.41,483697.4,516011.8,514970.47,491674.96,476055.47,440840.62,527787.11,482942.76,516179.14,488855.58,458637.35,455360.88,467897.86,513894.33,512469.72,479592.3,486229.46,471300.86,582761.44,516068.18,448567.3,487645.04,570992.19,562156.57,523330.42,578976.16,563781.53,667852.79,694685.93,617773.66,803200.54,702598.76,575922.24,622145.3,414244.34];
+const commonOpts = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { display: false }, ticks: { color: '#94a3b8', maxRotation: 45, autoSkip: true, maxTicksLimit: 12 } },
+    y: { grid: { color: '#f1f5f9' }, ticks: { color: '#94a3b8' } }
+  }
+};
+new Chart(document.getElementById('dlChart'), {
+  type: 'line',
+  data: { labels, datasets: [{ data: dlData, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.08)', fill: true, tension: 0.35, pointRadius: 2, borderWidth: 2 }] },
+  options: {
+    ...commonOpts,
+    plugins: { ...commonOpts.plugins, tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' 次' } } },
+    scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, ticks: { ...commonOpts.scales.y.ticks, callback: v => v >= 1000000 ? (v/1000000).toFixed(1) + 'M' : v >= 1000 ? (v/1000).toFixed(0) + 'K' : v } } }
+  }
+});
+new Chart(document.getElementById('rvChart'), {
+  type: 'line',
+  data: { labels, datasets: [{ data: rvData, borderColor: '#16a34a', backgroundColor: 'rgba(22,163,74,0.08)', fill: true, tension: 0.35, pointRadius: 2, borderWidth: 2 }] },
+  options: {
+    ...commonOpts,
+    plugins: { ...commonOpts.plugins, tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.y.toLocaleString() } } },
+    scales: { ...commonOpts.scales, y: { ...commonOpts.scales.y, ticks: { ...commonOpts.scales.y.ticks, callback: v => '$' + (v >= 1000000 ? (v/1000000).toFixed(1) + 'M' : v >= 1000 ? (v/1000).toFixed(0) + 'K' : v) } } }
+  }
+});
+</script>
+
+
+<script id="card-i18n">
+(function(){
+  const ZH_EN = {
+  "维度一 · 基础概览": "Overview",
+  "维度二 · 近30天核心指标": "KPIs · Last 30 Days",
+  "维度三 · 上线至今月度趋势": "Monthly Trend",
+  "维度四 · 上线至今 Top 5 国家表现": "Top 5 Countries (All-time)",
+  "数据分析洞察": "Insights",
+  "全球上线时间": "Global Launch",
+  "上线至今总下载": "Total Downloads",
+  "上线至今总收入": "Total Revenue",
+  "数据来源：Sensor Tower": "Source: Sensor Tower",
+  "全球 · 所有时间": "Global · All-time",
+  "全球 · 近30天": "Global · 30d",
+  "下载量": "Downloads",
+  "收入": "Revenue",
+  "平均DAU": "Avg DAU",
+  "月度下载量趋势": "Monthly Downloads",
+  "月度收入趋势": "Monthly Revenue",
+  "国家": "Country",
+  "下载占比": "DL Share",
+  "净收入": "Net Revenue",
+  "净收入占比": "Rev Share",
+  "市场集中度": "Market Concentration",
+  "变现效率": "Monetization",
+  "区域结构": "Regional Mix",
+  "趋势判断": "Trend"
+};
+  // reverse map
+  const EN_ZH = {};
+  for(const [k,v] of Object.entries(ZH_EN)) EN_ZH[v]=k;
+
+  let lang = 'zh';
+
+  // elements to translate: text nodes that exactly match a key
+  function translateNode(map){
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+    const targets = [];
+    let node;
+    while((node = walker.nextNode())){
+      const txt = node.textContent.trim();
+      if(map[txt]) targets.push({node, val: map[txt]});
+    }
+    targets.forEach(({node, val}) => { node.textContent = node.textContent.replace(node.textContent.trim(), val); });
+    // also handle placeholder subtitles
+    document.querySelectorAll('.item-sub, .kpi-sub, .section-label, .section-title, .chart-title, .item-label, .kpi-label, .insight-card h4').forEach(el=>{
+      const txt = el.textContent.trim();
+      if(map[txt]) el.textContent = map[txt];
+    });
+  }
+
+  const btn = document.getElementById('langToggleBtn');
+  btn.addEventListener('click', function(){
+    lang = lang==='zh'?'en':'zh';
+    btn.textContent = lang==='zh'?'EN':'中文';
+    document.documentElement.lang = lang==='zh'?'zh-CN':'en';
+    translateNode(lang==='en'?ZH_EN:EN_ZH);
+  });
+})();
+</script>
+
+</body>
+</html>

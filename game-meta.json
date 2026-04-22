@@ -88,5 +88,35 @@
     "genre": "平台跑酷",
     "totalDownloads": "526,501,855",
     "totalRevenue": "$20,325,518"
+  },
+  "竞品分析_PolygunArena": {
+    "iconUrl": "https://assets.sensortower-china.com/_KedaMQ4Pwjg9DpINQAKzq-pf793KJ5CZSsXJwOL01XdXOp5QzS36CYlmjT3I9TaxhE=s150",
+    "genre": "第三人称射击",
+    "totalDownloads": "18,451,523",
+    "totalRevenue": "$5,482,554"
+  },
+  "竞品分析_PunchTV": {
+    "iconUrl": "https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/10/24/f6/1024f69a-c1ec-8fa9-8545-7430286f7564/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/150x150bb.jpg",
+    "genre": "休闲街机",
+    "totalDownloads": "92,464",
+    "totalRevenue": "$19,550"
+  },
+  "竞品分析_TombOfTheMaskOldMaze": {
+    "iconUrl": "https://assets.sensortower-china.com/ATGr-U4JBK2VjFzKGK9eMMkrDxJaazadOUoz_7Yl0U5NrWSFcFUzEtNurWXYzVWc8uOO=s150",
+    "genre": "平台跑酷",
+    "totalDownloads": "527,703,097",
+    "totalRevenue": "$20,363,274"
+  },
+  "竞品分析_MassiveWarfare": {
+    "iconUrl": "https://assets.sensortower-china.com/p0HtacWW-imz5ew6yX0RPyu0B5R0S6kSVGEo04okjQTnTECAr2JZCv9wGmMJ9lrREg=s150",
+    "genre": "车辆射击",
+    "totalDownloads": "92,577,950",
+    "totalRevenue": "$33,134,268"
+  },
+  "竞品分析_BattleCars": {
+    "iconUrl": "https://assets.sensortower-china.com/wgmezSyFjj7V6XJdwZrEaa9qIAJrGRW-PBSMOPobGOd5KiSpDbjN-kiKfhmnCjdIvpO8=s150",
+    "genre": "车辆射击",
+    "totalDownloads": "9,281,812",
+    "totalRevenue": "$1,050,671"
   }
 }
